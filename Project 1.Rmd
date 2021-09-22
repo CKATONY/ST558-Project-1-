@@ -1,0 +1,566 @@
+---
+title: "ST558 Project 1"
+author: "Jiatao Wang"
+date: "9/18/2021"
+output: html_document
+---
+## This Project aims to accessing data from API, and make some Exploratory Data Analysis. 
+
+API that is using in this project can be access ['here'](https://pokeapi.co/)  
+Pokémon is childhood memory for lots of people.  
+I used to play Pokémon on Game Boy Advance SP  
+![SP](/Users/CKA/Desktop/Master 2021 Fall/ST558 data science for statistician/SP.jpg)
+![Pikachu](/Users/CKA/Desktop/Master 2021 Fall/ST558 data science for statistician/pikachu.png)
+
+## The packages in r that are needed in this project 
+    *knitr
+    *httr
+    *jsonlite
+    *tibble 
+    *tidyverse
+    *dplyr 
+
+## Here is the code I need to contact API and extract some data from the pokeapi 
+```{r, include= TRUE }
+knitr::opts_chunk$set(echo = TRUE, eval=TRUE, warning= FALSE, message=FALSE)
+library(httr)
+library(jsonlite)
+library(dplyr)
+#X <- GET("https://pokeapi.co/api/v2/location")
+#Y <- GET("https://pokeapi.co/api/v2/move")
+
+
+#parsed <- Y$content %>% rawToChar() %>% fromJSON()
+#str(parsed, max.level = 1)
+#T <- GET("https://pokeapi.co/api/v2/move?offset=20&limit=20")
+#getdata_df <- as.data.frame(parsed)
+
+
+
+#parsed <- T$content %>% rawToChar() %>% fromJSON()
+#str(parsed, max.level = 1)
+#C <- GET("https://pokeapi.co/api/v2/{endpoint}")
+#D <- GET("https://pokeapi.co/api/v2")
+#E <- GET("https://pokeapi.co/api/v2/berry/")
+#F <- GET("https://pokeapi.co/api/v2/move/{id or name}")
+#str(F)
+#getdata_text <- content(Y,"text")
+#getdata_json<- fromJSON(getdata_text)
+#berry_lookup <- as.data.frame(getdata_json)
+
+#G<- GET("https://pokeapi.co/api/v2/language/9")
+#str(G)
+#getdata_text <- content(E,"text")
+#getdata_json<- fromJSON(getdata_text, flatten = TRUE)
+#berry_look <- as_tibble(getdata_json$results)
+
+#L <- GET("https://pokeapi.co/api/v2/move/1/")
+#getdata_text1 <- content(L,"text")
+#getdata_json1<- fromJSON(getdata_text1, flatten = FALSE)
+#getdata_df1 <- as.data.frame(getdata_json1)
+
+
+#M <- GET("https://pokeapi.co/api/v2/super-contest-effect/20")
+# content(M,"text")
+# B <- fromJSON(content(M,"text"), flatten = TRUE)
+#as.data.frame(B$results)
+
+#parsed <- M$content %>% rawToChar() %>% fromJSON()
+
+#P <- GET("https://pokeapi.co/api/v2/move/71")
+#parsed <- P$content %>% rawToChar() %>% fromJSON()
+#parsed$meta
+
+#########################this is what the project is currently working on/ utilizing other data sets in the future. 
+  #this is the method we access the api 
+  E <- GET("https://pokeapi.co/api/v2/berry/")
+  getdata_text <- content(E,"text")
+  getdata_json<- fromJSON(getdata_text, flatten = TRUE)
+  berry_look <- as_tibble(getdata_json$results)
+
+# after getting the data set of berry containing the name and its url links, writing the function that call the attributes of each type of berry
+getB <- function(s,tt){
+    url <- tt$url[which(tt$name==s)]
+    r <- GET(url=url)
+    x <- content(r, 'parsed')
+    # pull data from several end points(which are all attributes associate with berries)
+    berry_name <- x$name
+    berry_growth_time <- x$growth_time
+    berry_size <- x$size
+    berry_firmness <- x$firmness$name
+    berry_max_harvest <-x$max_harvest
+    berry_natural_gift_power <- x$natural_gift_power
+    #berry_natural_gift_type <- x$natural_gift_type
+    berry_soil_dryness <- x$soil_dryness
+    berry_smoothness <- x$smoothness
+    #create the tibble that containing the names of the berries as well cols of their attributes. 
+  df <- tibble(
+     Name = berry_name,
+     Growth_Time = berry_growth_time,
+     Size = berry_size,
+     Firmness = berry_firmness,
+     Max_Harvest = berry_max_harvest,
+     Natural_Gift_Power = berry_natural_gift_power,
+     #Natrual_Gift_Type = berry_natural_gift_type,
+     Soil_Dryness = berry_soil_dryness,
+     Smoothness =  berry_smoothness
+  )
+   return(df)
+}
+
+
+# using a loop to get all the berry and its attributes by using the function getB 
+# is I use the wrapper function in this part, it will return the list of all rbind datasets 
+# from the obs 2 to obs 20 each. so I abandoned using wrapper function, just used a for loop inorder to get the dataframe. 
+df <- getB(berry_look$name[1],berry_look)
+for (i in 2:length(berry_look$name)){
+    df <- rbind(df, getB(berry_look$name[i],berry_look))
+}
+```
+
+
+### Here is some description of varaibles in the data set 
+They are all attributes of different type of berry in the game Pokemon 
+  __growth_time__-- Time it takes the tree to grow one stage, in hours. Berry trees go through four of these growth stages before they can be picked.
+
+  __max_harvest__-- The maximum number of these berries that can grow on one tree in Generation IV.
+
+  __natural_gift_power__-- The power of the move "Natural Gift" when used with this Berry.
+
+  __size__-- The size of this Berry, in millimeters.
+
+  __firmness__-- The firmness of this berry, used in making Pokéblocks or Poffins.
+
+  __smoothness__-- The smoothness of this Berry, used in making Pokéblocks or Poffins.
+  __soil_dryness__-- The speed at which this Berry dries out the soil as it grows. A higher rate means the soil dries more quickly.
+
+Let's look at this small dataset first 
+```{r, include= TRUE }
+View(df)
+```
+
+### Then we did some exploratory data analysis on the orignial dataset. 
+we create two new variables as well as categorizing some potential predictors 
+  *one is __Growth_Rate_in_Hour__,which is the Size divided by growth time. 
+  *another one is __Pokeblocks_Productivity__ which is the smoothness divided by soil dryness. 
+  *categorized Size and Growth_Rate_in_Hour.
+  
+  
+```{r, include= TRUE }
+library(tidyverse)
+# create two new variables:
+NewPoke <- df %>% mutate(Growth_Rate_in_Hour = round(Size/Growth_Time,digits=2), Pokeblocks_Productivity = round(Smoothness/Soil_Dryness,digits =2) )
+# create a factor level for the growth_rate first 
+v<- ifelse(NewPoke$Growth_Rate_in_Hour >= 40, "Fast",
+       ifelse(NewPoke$Growth_Rate_in_Hour >= 20, "General",
+              ifelse(NewPoke$Growth_Rate_in_Hour >= 5,"slow","Very Slow"))
+       )
+
+m<-ifelse(NewPoke$Size >= 100, "Big",
+       ifelse(NewPoke$Size >= 50, "Medium",
+              ifelse(NewPoke$Size >= 0,"Small"))
+       )
+
+NewPoke$Growth_Rate_Category <- v
+NewPoke$Size_Category <- m
+```
+Now the data set look like this:
+
+```{r, include= TRUE }
+View(NewPoke)
+```
+
+Now We create some tables using the new data set. NewPoke! 
+```{r, include= TRUE }
+# contingency table 
+table(NewPoke$Firmness, NewPoke$Growth_Time)
+table(NewPoke$Firmness, NewPoke$Growth_Rate_Category)
+table(NewPoke$Size_Category,NewPoke$Firmness)
+```
+
+Next step: some `summarize` stats from the data NewPoke 
+  *W is the summary statistics grouped by Size_category. 
+  *W2 is the summary statistics grouped by Firmness.
+  *W3 is the summary statistics grouped by Growth_Rate_Category. 
+```{r, include= TRUE }
+W <-NewPoke %>% group_by(Size_Category) %>% summarise(IQR_growth_rate = IQR(Growth_Rate_in_Hour), Size_mean = mean(Size), pokeblock_productivity_mean = mean(Pokeblocks_Productivity))
+View(W)
+
+W2<-NewPoke %>% group_by(Firmness) %>% summarise(median_growrate = median(Growth_Rate_in_Hour), Size_mean = mean(Size), pokeblock_productivity_mean = mean(Pokeblocks_Productivity))
+View(W2)
+
+W3 <- NewPoke %>% group_by(Growth_Rate_Category) %>% summarise(mean_growrate = mean(Growth_Rate_in_Hour), Size_mean = mean(Size), pokeblock_productivity_mean = mean(Pokeblocks_Productivity))
+View(W3)
+```
+
+
+Finally, we create some simple graphs to visualize the data NewPoke 
+
+
+this is the graph exploring the count of berry that is categorized by firmness and size within each type if firmness.  
+```{r, include= TRUE }
+g<-ggplot(NewPoke,aes(x = Firmness))
+  g + geom_bar(aes(fill = as.factor(Size_Category)),position = "dodge")+ labs(x = "Firmness", y = "Count",title = "Firmness with Category Size")+ scale_fill_discrete(name = "Size Category") 
+```  
+
+
+
+this is the graph exploring the count of firmness and size. 
+```{r, include= TRUE }
+g<-ggplot(NewPoke,aes(x = Firmness,y = Size))
+  g + geom_count(shape=23, fill="blue", color="darkred")+ labs(x = "Firmness", y = "Size",title = "Size VS Firmness") 
+```    
+  
+this is the graph creating the barplots that associate with Size and grow_rate   
+```{r, include= TRUE } 
+g<-ggplot(NewPoke,aes(x = Size_Category))
+  g + geom_bar(aes(fill = as.factor(Growth_Rate_Category)),position = "dodge",show.legend = NA) + facet_grid(cols = vars(Firmness),labeller = label_both)+ labs(x = "Size")+ scale_fill_discrete(name = "Growth Rate") + theme(axis.text.x = element_text(angle = 45, vjust = 1, hjust = 1))+labs(title = "Size Categorized by Growth Rate Paneled by Firmness ")
+```
+
+this is the graph that create histogram of size categorized by growth_rate
+```{r, include= TRUE }
+g<-ggplot(NewPoke,aes(x = Size ,color = Growth_Rate_Category))
+  g + geom_histogram(fill = "white",position = "dodge",binwidth = 25)+ labs(x = "Size", y = "count",title = "Size of Berries with GrowthRate") 
+```  
+
+This is the boxplot paneled by growth_rate, and size within each category of growth_rate. 
+```{r, include= TRUE }  
+ g<-ggplot(NewPoke,aes(x = Growth_Rate_Category,y = Size))
+  g + geom_boxplot(position = "dodge") + labs(x = "y",title = "Boxplot for Size with Growth Rate ")+ scale_x_discrete(name = "Growth_Rate")+ geom_jitter(aes(color = as.factor(Size_Category))) + scale_y_continuous() + scale_color_discrete(name = "y")
+```  
+
+
+This is the scatter plot of size and growth_rate_in_hour(they should have high correlation since growth_rate in hour is generated by size)  
+```{r, include= TRUE }  
+ g<-ggplot(NewPoke,aes(x = Size, y =Growth_Rate_in_Hour))
+  g + geom_point(aes(color = as.factor(Firmness),shape = as.factor(Size_Category)),size = 2) + geom_smooth(method = lm) + labs(x = "Size", y = "Growth_Rate_in_Hour",title = "Size VS Growth_Rate_in_Hour")+ scale_x_continuous(name = "size")  + scale_color_discrete(name = "Firmness")+scale_shape_discrete(name = "Size_Category")
+```  
+  
+```{r, include= TRUE }
+ g<-ggplot(NewPoke,aes(x = Size, y =Growth_Rate_in_Hour))
+  g + geom_point(aes(shape = as.factor(Firmness),color = as.factor(Size_Category)),size = 2) + geom_smooth(method = lm) + labs(x = "Size", y = "Growth_Rate_in_Hour",title = "Size VS Growth_Rate_in_Hour")+  scale_shape_manual(values = c(3:7))+scale_color_discrete(name = "Size_Category")+
+    scale_shape_discrete(name="Firmness")
+```   
+  
+  
+
+    
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+```{r, include= TRUE }
+##########################################
+Berry_select<- function(v){
+  df <- getB(berry_look$name[1],berry_look)
+  for (i in 2:v){
+    df <- rbind(df, getB(berry_look$name[i],berry_look))
+    print(list(df))
+  }
+}
+
+#get the growth rate/its formula as well as the level than its experience needed for each level_up 
+Rate <- GET("https://pokeapi.co/api/v2/growth-rate/")
+getdata_textRate <- content(Rate,"text")
+getdata_json_Rate<- fromJSON(getdata_textRate, flatten = TRUE)
+Growth_Rate_look <- as_tibble(getdata_json_Rate$results)
+
+get_growth_rate <- function(s) {
+
+    url <- Growth_Rate_look$url[which(Growth_Rate_look$name==s)]
+    r <- GET(url=url)
+    x <- content(r, 'text')
+    Json_x<- fromJSON(x, flatten = TRUE)
+    # pull data from several end points(which are all attributes associate with growth_rate)
+    Growth_Category <- s
+    Growth_Formula <- Json_x$formula
+    Growth_levels <- matrix(unlist(Json_x$levels$level),,1)
+    Growth_experience <-matrix(unlist(Json_x$levels$experience),,1)
+    species_name <- matrix(unlist(Json_x$pokemon_species$name),,1)
+
+    
+    #create the tibble that containing the names of the berries as well cols of their attributes. 
+  df <- tibble(
+     Category_s_ = Growth_Category,
+     Formula_s_ = Growth_Formula,
+     level = Growth_levels,
+     experience = Growth_experience
+     
+  )
+   return(df)
+}
+
+
+
+df2 <- get_growth_rate(Growth_Rate_look$name[1])
+for (i in 2:length(Growth_Rate_look$name)){
+    df2 <- cbind(df2, get_growth_rate(Growth_Rate_look$name[i])[,1:2])
+
+}
+
+
+
+
+#name for each pokemon go as well as its growth rate and its formula. 
+get_growth_species_name <- function(s) {
+
+    url <- Growth_Rate_look$url[which(Growth_Rate_look$name==s)]
+    r <- GET(url=url)
+    x <- content(r, 'text')
+    Json_x<- fromJSON(x, flatten = TRUE)
+    # pull data from several end points(which are all attributes associate with growth_rate)
+    Growth_Category <- s
+    Growth_Formula <- Json_x$formula
+    Growth_levels <- matrix(unlist(Json_x$levels$level),,1)
+    Growth_experience <-matrix(unlist(Json_x$levels$experience),,1)
+    species_name <- matrix(unlist(Json_x$pokemon_species$name),,1)
+    #create the tibble that containing the names of the species as well cols of their attributes. 
+    
+  pokemon_species <- tibble(
+    species__name = species_name,
+    Growth_Category = s,
+    Growth_Formula = Growth_Formula
+  )
+   return(pokemon_species)
+}
+
+dfname <- get_growth_species_name(Growth_Rate_look$name[1])
+for (i in 2:length(Growth_Rate_look$name)){
+    dfname <- rbind(dfname, get_growth_species_name(Growth_Rate_look$name[i]))
+
+}
+View(dfname)
+
+
+
+# this return the  pokemon name and its lots of attributes. 
+
+get_growth_species <- function(s,i) {
+
+    url <- Growth_Rate_look$url[which(Growth_Rate_look$name==s)]
+    r <- GET(url=url)
+    x <- content(r, 'text')
+    Json_x<- fromJSON(x, flatten = TRUE)
+    # pull data from several end points(which are all attributes associate with growth_rate)
+    Growth_Category <- s
+    Growth_Formula <- Json_x$formula
+    Growth_levels <- matrix(unlist(Json_x$levels$level),,1)
+    Growth_experience <-matrix(unlist(Json_x$levels$experience),,1)
+    species_name <- matrix(unlist(Json_x$pokemon_species$name),,1)
+#for (i in 1:length(Json_x$pokemon_species$url)){
+    url2<-Json_x$pokemon_species$url[i]
+    r2 <-GET(url=url2)
+    x2 <-content(r2, 'text')
+    Json_x2<- fromJSON(x2, flatten = TRUE)
+    
+    pokeName <-Json_x2$name
+    Base_Happiness <- Json_x2$base_happiness
+    Capture_Rate <- Json_x2$capture_rate
+    Color <- Json_x2$color$name
+    Evolves <- ifelse(!is.null(Json_x2$evolves_from_species$name),Json_x2$evolves_from_species$name,NA)
+    Generation <- Json_x2$generation$name
+    Form_Switchable <- Json_x2$forms_switchable
+    Habit <- ifelse(!is.null(Json_x2$habitat$name),Json_x2$habitat$name,NA)
+    Hatch_COunter <- Json_x2$hatch_counter
+    Shape <- Json_x2$shape$name
+
+    
+    pokemon_species <- tibble(
+    species.name = pokeName,
+    Growth_Category = s,
+    Growth.Formula = Growth_Formula,
+    BaseHappiness = Base_Happiness,
+    Capture.Rate = Capture_Rate,
+    Color.poke = Color,
+    Evolves.poke = Evolves,
+    Generation.poke = Generation,
+    Form_Switchable.poke = Form_Switchable,
+    Habit.poke = Habit,
+    Hatch_COunter.poke =Hatch_COunter,
+    Shape.poke = Shape
+  )
+    for (i in length(pokemon_species)){
+      ifelse(!is.null(pokemon_species[i]),pokemon_species[i],NA)
+    }
+    
+   return(pokemon_species)
+
+    
+}    
+
+    
+    #create the tibble that containing the names of the species as well cols of their attributes. 
+# this works but is a little bit slow using what I wrote. 
+PokeMon <- get_growth_species(Growth_Rate_look$name[1],1)
+for (i in 1:length(Growth_Rate_look$name)){
+  for (j in 2:length(fromJSON(content(GET(Growth_Rate_look$url[i]),"text"),flatten = TRUE)$pokemon_species$name)){
+     PokeMon <- rbind(PokeMon, get_growth_species(Growth_Rate_look$name[i],j))
+  }
+   
+}
+
+View(PokeMon)
+```
+
+
+
+
+
+
+```{r}
+type_effectiveness <- function(type, strength="all", direction="all"){
+
+  query <- "type/?limit=20"
+  request = glue::glue("http://pokeapi.co/api/v2/{query}")
+  r <- httr::GET(request)
+
+  types <- c()
+
+  for (i in c(1:20)) {
+    types <- c(types, httr::content(r,"parsed")$results[[i]]$name)
+  }
+
+  strengths <- c("strong", "weak", "all")
+  directions <- c("to", "against", "all")
+
+  if (type %in% types){
+    if (strength %in% strengths){
+      if (direction %in% directions){
+
+        type_id = match(type, types)
+        query <- paste("type/", type_id, "/", sep="")
+        request = glue::glue("http://pokeapi.co/api/v2/{query}")
+        r <- httr::GET(request)
+
+        st <- c()
+        wt <-  c()
+        sa <- c()
+        wa <- c()
+
+        for (j in c(1:20)){
+
+          tryCatch({
+            st <- c(st, httr::content(r,"parsed")$damage_relations$half_damage_from[[j]]$name)
+          }, error=function(e) NA)
+
+          tryCatch({
+            wt <- c(wt, httr::content(r,"parsed")$damage_relations$double_damage_from[[j]]$name)
+          }, error=function(e) NA)
+
+          tryCatch({
+            sa <- c(sa, httr::content(r,"parsed")$damage_relations$double_damage_to[[j]]$name)
+          }, error=function(e) NA)
+
+          tryCatch({
+            wa <- c(wa, httr::content(r,"parsed")$damage_relations$half_damage_to[[j]]$name)
+          }, error=function(e) NA)
+
+        }
+
+        df_st <- data.frame(st)
+        df_wt <- data.frame(wt)
+        df_sa <- data.frame(sa)
+        df_wa <- data.frame(wa)
+
+        names(df_st) <- c("Strong To")
+        names(df_wt) <- c("Weak To")
+        names(df_sa) <- c("Strong Against")
+        names(df_wa) <- c("Weak Against")
+
+        if (direction == "to"){
+          if (strength == "strong"){
+            return(df_st)
+          }
+          if (strength == "weak"){
+            return(df_wt)
+          }
+          if (strength == "all"){
+            return(list(df_st, df_wt))
+          }
+        }
+
+        if (direction == "against"){
+          if (strength == "strong"){
+            return(df_sa)
+          }
+          if (strength == "weak"){
+            return(df_wa)
+          }
+          if (strength == "all"){
+            return(list(df_sa, df_wa))
+          }
+        }
+
+        if (direction == "all"){
+          if (strength == "strong"){
+            return(list(df_st, df_sa))
+          }
+          if (strength == "weak"){
+            return(list(df_wt, df_wa))
+          }
+          if (strength == "all"){
+            return(list(df_st, df_wt, df_sa, df_wa))
+          }
+        }
+      }
+      else{
+        return(FALSE)
+      }
+    }
+    else{
+      return(FALSE)
+    }
+  }
+  else{
+    return(FALSE)
+  }
+}
+
+
+get_region <- function(colour) {
+
+  resp <- httr::GET(paste0("http://pokeapi.co/api/v2/version/", colour))
+  con <- httr::content(resp)
+
+  if (resp$status_code == 404) {
+      cols <- pokedex::get_types(type = "version")
+      stop("Colour not found. Make sure it is one of: ", paste0(cols, collpase =", "))
+  }
+
+  r <- con$version_group$url %>%
+    httr::GET() %>%
+    httr::content()
+
+  out <- tibble::tibble(
+    game = colour,
+    region = ifelse(is_empty(r$region), NA, r$regions[[1]]$name),
+    generation = r$generation$name
+  )
+  return(out)
+}
+```
+
+## Including Plots
+
+You can also embed plots, for example:
+
+```{r pressure, echo=FALSE}
+plot(pressure)
+```
+
+Note that the `echo = FALSE` parameter was added to the code chunk to prevent printing of the R code that generated the plot.
