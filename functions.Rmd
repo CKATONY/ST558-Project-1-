@@ -10,8 +10,9 @@ output: html_document
 library(httr)
 library(jsonlite)
 library(dplyr)
+
 # This is the function that input the endpoints, as well as the choices of endpoints 
-#for example, the endpoint berry contains 20 choices, that is, 20 types of berry. 
+#for example, the endpoint berry contains 64 choices, that is, 64 types of berry. 
 # for the berry data, if the choice is 0, it returns all the berries and most of their attributes. 
 # for the growth-rate data, if the choice is 0, it will returns the growth rate, corresponding formula
 # as well as the levels with corresponding experience needed. In this case, all pokemon species share same 
@@ -19,89 +20,139 @@ library(dplyr)
 # if the choice is not 0 for the growth-rate endpoint, it will return the pokemon species which are under the 
 # category of growth-rate, for example, if we input choice = 1, it will return the all the pokemon species that are 
 # categorized as slow growth-rate. etc....
-#The total numbers categories for the growth rate is 6. if you enter the number of choice greater than 6, it will return 
+#The total number of categories for the berry flavor is 5. 
+#The total number of categories for the growth rate is 6. if you enter the number of choice greater than 6, it will return 
 # error, same rule applies to the endpoint berry
+# for the endpoint item, if the choice is 0, it will return all the items and its attribute,
+#if the choice is not zero, it will return up to numbers of item you want to get up to your choice. 
 
 
 get_endpoints <- function(endpoint,choice){
-  overall <- GET(paste0("https://pokeapi.co/api/v2/",endpoint))
+  limit <- paste0(endpoint,"/?limit=1000")
+  overall <- GET(paste0("https://pokeapi.co/api/v2/",limit))
   getdata_text_all <- content(overall,"text")
   getdata_json_all<- fromJSON(getdata_text_all, flatten = TRUE)
-  look_all <- as_tibble(getdata_json_all$results)
+  tt <- as_tibble(getdata_json_all$results)
   
   
              if(endpoint == "berry"){
                  if(choice == 0){
-                    ee <- getBerry(look_all$name[1],look_all)
-                          for (i in 2:length(look_all$name)){
-                             ee <- rbind(ee,getBerry(look_all$name[i],look_all))
-                             if (length(ee$Name)==length(look_all$name)){
-                               return(ee) 
-                          }
+                    C <- lapply(tt$name,getBerry,tt)
+                       D<-do.call(rbind,C)
+                       return(D)
                         }
-                      }
+                      
                  if(choice != 0){
-                  ee <- getBerry(look_all$name[choice],look_all)
-                    return(ee)
+                    C <- lapply(tt$name[choice],getBerry,tt)
+                       D<-do.call(rbind,C)
+                       return(D)
                }
              }
   
-            if(endpoint == "growth-rate"){
-               if(choice == 0){
-                 ff <- get_growth_rate(look_all$name[1],look_all)
-                    for (i in 2:length(look_all$name)){
-                      ff <- cbind(ff, get_growth_rate(look_all$name[i],look_all)[,1:2])
-                        if(ncol(ff)==12){
-                          return(ff)
-                       }
-                   }
-              }
-               
-
-               if(choice != 0){
-                   PokeMon1 <- get_growth_species(look_all$name[choice],1,look_all)
+                if(endpoint == "growth-rate"){
+                  if(choice == 0){
+                     C <- lapply(tt$name,get_growth_rate,tt)
+                       D<- do.call(rbind,C) 
+                       return(D)
+                }
+                if(choice != 0){
+                   PokeMon1 <- get_growth_species(tt$name[choice],1,tt)
                 #for (i in 1:length(look_all$name)){
-                  c = length(fromJSON(content(GET(look_all$url[choice]),"text"),flatten = TRUE)$pokemon_species$name)
-                     for (j in 2:c){
-                        PokeMon1 <- bind_rows(PokeMon1, get_growth_species(look_all$name[choice],j,look_all))
+                    c = length(fromJSON(content(GET(tt$url[choice]),"text"),flatten = TRUE)$pokemon_species$name)
+                      for (j in 2:c){
+                        PokeMon1 <- bind_rows(PokeMon1, get_growth_species(tt$name[choice],j,tt))
                           if (length(PokeMon1$species.name)==c){
                             return(PokeMon1) 
                         }
                       }
                     }
-                  }
+            }
+              if(endpoint == "berry-flavor"){
+                if(choice == 0){
+                     C <- lapply(tt$name,getBerry_Flavors,tt)
+                       D<-do.call(rbind,C) 
+                               return(D) 
+                          }
+                        
+                  
+                 if(choice != 0){
+                    C <- lapply(tt$name[choice],getBerry_Flavors,tt)
+                    D<-do.call(rbind,C) 
+                    return(D)
+               }
+              }
+               
+             if(endpoint == "item"){
+               if(choice == 0){
+                 C <- lapply(tt$name,get_item,tt)
+                 D<-do.call(rbind,C)
+                 return(D)
+                 
+               }
+               if(choice != 0){
+                 C <- lapply(tt$name[1:choice],get_item,tt)
+                 D<-do.call(rbind,C)
+                 return(D)
+                 
+               }
+             }
+  
+  
+  
+  
+  
+  
 }
+                
+ 
+
 
              
-             
+get_endpoints("growth-rate")               
              
            
-    
+```    
 #}    
 
     
  
 
-          
-  
-get_endpoints("growth-rate")  
+__*These are individual functions that I am using in the universal function above.We could use those functions to return the data, but we need to set up some pre-data to access those functions. For example, we need to get berry names and its urls before we can use its function written by me. Codes are provided below.*__ 
 
-Rate <- GET("https://pokeapi.co/api/v2/growth-rate/")
+Functions are 
+  **get_growth_species
+  **get_growth_rate
+  **getBerry_Flavors
+  **getBerry 
+
+
+
+
+
+__This function get species, while access the several endpoints, the pokeapi is built with endpoints with endpoints, that is, growth-rate is one endpoints but some of the returned variables we can get are also endpoints. We access the pokemon-species(endpoint) inside the growth rate endpoint.__
+```{r}  
+#ability endpoint  interesting 
+Rate <- GET("https://pokeapi.co/api/v2/ability/?limit=1000$offset=1000")
 getdata_textRate <- content(Rate,"text")
 getdata_json_Rate<- fromJSON(getdata_textRate, flatten = TRUE)
-tt <- as_tibble(getdata_json_Rate$results)
+tt <- as_tibble(getdata_json_Rate$results)  
 
-PokeMon <- get_growth_species(tt$name[1],1,tt)
-for (i in 1:length(tt$name)){
-   for (j in 2:length(fromJSON(content(GET(tt$url[1]),"text"),flatten = TRUE)$pokemon_species$name)){
-            PokeMon <- bind_rows(PokeMon, get_growth_species(tt$name[1],j,tt))
-   }
-}
+
+
+#PokeMon <- get_growth_species(tt$name[1],1,tt)
+#for (i in 1:length(tt$name)){
+#   for (j in 2:length(fromJSON(content(GET(tt$url[1]),"text"),flatten = TRUE)$pokemon_species$name)){
+ #           PokeMon <- bind_rows(PokeMon, get_growth_species(tt$name[1],j,tt))
+ #  }
+#}
 
                              
                                
  
-  
+Rate <- GET("https://pokeapi.co/api/v2/growth-rate/")
+getdata_textRate <- content(Rate,"text")
+getdata_json_Rate<- fromJSON(getdata_textRate, flatten = TRUE)
+tt <- as_tibble(getdata_json_Rate$results)  
 
 get_growth_species <- function(s,i,tt) {
 
@@ -159,13 +210,19 @@ get_growth_species <- function(s,i,tt) {
     
     #create the tibble that containing the names of the species as well cols of their attributes. 
 # this works but is a little bit slow using what I wrote. 
-PokeMon <- get_growth_species(Growth_Rate_look$name[1],1)
-for (i in 1:length(Growth_Rate_look$name)){
-  for (j in 2:length(fromJSON(content(GET(Growth_Rate_look$url[i]),"text"),flatten = TRUE)$pokemon_species$name)){
-     PokeMon <- rbind(PokeMon, get_growth_species(Growth_Rate_look$name[i],j))
+PokeMon <- get_growth_species(tt$name[1],1,tt)
+for (i in 1:length(tt$name)){
+  for (j in 2:length(fromJSON(content(GET(tt$url[i]),"text"),flatten = TRUE)$pokemon_species$name)){
+     PokeMon <- bind_rows(PokeMon,get_growth_species(tt$name[i],j,tt)) 
   }
    
 }
+for(i in 1:length(fromJSON(content(GET(tt$url[1]),"text"),flatten = TRUE)$pokemon_species$name)){
+  C <- lapply(tt$name[1],i,tt)
+}
+
+do.call(rbind,C) 
+```
 
 
 
@@ -177,11 +234,9 @@ for (i in 1:length(Growth_Rate_look$name)){
 
 
 
+This is the function written to get level and experience as well as growth-rate/growth-formula 
 
-
-
-
-
+```{r}
 get_growth_rate <- function(s,tt) {
 
     url <- tt$url[which(tt$name==s)]
@@ -212,48 +267,141 @@ get_growth_rate <- function(s,tt) {
 df2 <- get_growth_rate(Growth_Rate_look$name[1])
 for (i in 2:length(Growth_Rate_look$name)){
     df2 <- cbind(df2, get_growth_rate(Growth_Rate_look$name[i])[,1:2])
-
 }
+
+
+C <- lapply(tt$name,get_growth_rate,tt)
+D<- do.call(rbind,C) 
+```
+
+
+```{r}
   
   
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
+Rate <- GET("https://pokeapi.co/api/v2/item/?limit=1000")
+getdata_textRate <- content(Rate,"text")
+getdata_json_Rate<- fromJSON(getdata_textRate, flatten = TRUE)
+tt <- as_tibble(getdata_json_Rate$results)    
+
+Rate <- GET("https://pokeapi.co/api/v2/item/1")
+getdata_textRate <- content(Rate,"text")
+getdata_json_Rate<- fromJSON(getdata_textRate, flatten = TRUE)
+
+
+get_item <- function(s,tt) {
+
+    url <- tt$url[which(tt$name==s)]
+    r <- GET(url=url)
+    x <- content(r, 'text')
+    Json_x<- fromJSON(x, flatten = TRUE)
+    # pull data from several end points(which are all attributes associate with growth_rate)
+    Name <- Json_x$name
+    Category <- Json_x$category$name
+    Cost <- Json_x$cost
+    baby_trigger_for <- ifelse(!is.null(Json_x$baby_trigger_for),Json_x$baby_trigger_for,NA)
+    fling_effect <-ifelse(!is.null(Json_x$fling_effect),Json_x$fling_effect,NA)
+    fling_power <- ifelse(!is.null(Json_x$fling_effect),Json_x$fling_effect,NA)
+
+    
+    #create the tibble that containing the names of the berries as well cols of their attributes. 
+  df <- tibble(
+     name = Name,
+     category = Category,
+     cost  = Cost,
+     Baby_trigger_for = baby_trigger_for,
+     Fling_effect = fling_effect,
+     Fling_power = fling_power
+     
+  )
+   return(df)
+}
+
+
+
+df2 <- get_item(tt$name[1],tt)
+for (i in 2:length(tt$name)){
+    df2 <- bind_rows(df2, get_item(tt$name[i],tt))
+
+}  
+#This is a quicker way..... much quicker jesus   
+C <- lapply(tt$name[1:10],get_item,tt)
+D<-do.call(rbind,C)
   
 
-get_endpoints("berry")
- E <- GET("https://pokeapi.co/api/v2/berry/")
-  getdata_text <- content(E,"text")
-  getdata_json<- fromJSON(getdata_text, flatten = TRUE)
-  tt <- as_tibble(getdata_json$results)
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+```
+
+
+
+This function return the  berries names that share same type of flavor, as well as some attributes of flavors.
+```{r}
 
 # after getting the data set of berry containing the name and its url links, writing the function that call the attributes of each type of berry
   # caution: this function only return the single berry that you are interesed. 
+V <-content(GET("https://pokeapi.co/api/v2/berry-flavor/1"),"parsed")
+  
 
+
+
+# this function return the  berries names that share same type of flavor, as well as some attributes of flavors.   
+  E <- GET("https://pokeapi.co/api/v2/berry-flavor/")
+  getdata_text <- content(E,"text")
+  getdata_json<- fromJSON(getdata_text, flatten = TRUE)
+  tt <- as_tibble(getdata_json$results)
+   
+  getBerry_Flavors <- function(s,tt){
+   url <- tt$url[which(tt$name==s)]
+    r <- GET(url=url)
+    c <- content(r, 'text')
+    x <- fromJSON(c, flatten = TRUE)
+    # pull data from several end points(which are all attributes associate with berries)
+    flavor_name <- x$name
+    flavor_contest_type <- matrix(x$contest_type$name,,1)
+    flavor_type_berries <- matrix(x$berries$berry.name,,1)
+    flavor_potency <- x$berries$potency
+    
+   berry_flavor <- tibble(
+     Flavor_Name = flavor_name,
+     contest_type = flavor_contest_type,
+     berries_name = flavor_type_berries,
+     Flavor_potency = flavor_potency,
+  )
+   return(berry_flavor)
+ }
+#df <- getBerry_Flavors(tt$name[1],tt)
+#for (i in 2:length(tt$name)){
+#    df <- rbind(df, getBerry_Flavors(tt$name[i],tt))
+#}
+  
+ C <- lapply(tt$name[1],getBerry_Flavors,tt)
+D<-do.call(rbind,C) 
   
   
   
   
   
-  
-  
-  
-  
-  
+```
+
+
+
+
+
+This is the function written to get berry and its attributes. 
+```{r}
+  E <- GET("https://pokeapi.co/api/v2/berry/?limit=1000")
+  getdata_text <- content(E,"text")
+  getdata_json<- fromJSON(getdata_text, flatten = TRUE)
+  tt <- as_tibble(getdata_json$results) 
   
   getBerry <- function(s,tt){
     url <- tt$url[which(tt$name==s)]
@@ -266,7 +414,9 @@ get_endpoints("berry")
     berry_firmness <- x$firmness$name
     berry_max_harvest <-x$max_harvest
     berry_natural_gift_power <- x$natural_gift_power
-    #berry_natural_gift_type <- x$natural_gift_type
+    berry_natural_gift_type <- x$natural_gift_type$name
+#    berry_flavor <- x$flavors$flavor.name
+#    berry_flavor_potency <- x$flavors$potency
     berry_soil_dryness <- x$soil_dryness
     berry_smoothness <- x$smoothness
     #create the tibble that containing the names of the berries as well cols of their attributes. 
@@ -277,82 +427,25 @@ get_endpoints("berry")
      Firmness = berry_firmness,
      Max_Harvest = berry_max_harvest,
      Natural_Gift_Power = berry_natural_gift_power,
-     #Natrual_Gift_Type = berry_natural_gift_type,
+     Natrual_Gift_Type = berry_natural_gift_type,
+ #    Flavor = berry_flavor,
+ #    Flavor_Potency = berry_flavor_potency,
      Soil_Dryness = berry_soil_dryness,
      Smoothness =  berry_smoothness
   )
-   return(berry)
+  return(berry)
 }
 
 
 # using a loop to get all the berry and its attributes by using the function getB 
 # is I use the wrapper function in this part, it will return the list of all rbind datasets 
 # from the obs 2 to obs 20 each. so I abandoned using wrapper function, just used a for loop inorder to get the dataframe. 
-df <- getB(berry_look$name[1],berry_look)
-for (i in 2:length(berry_look$name)){
-    df <- rbind(df, getB(berry_look$name[i],berry_look))
+df <- getBerry(tt$name[1],tt)
+for (i in 2:length(tt$name)){
+    df <- do.call(rbind, list(getBerry(tt$name[i],tt)))
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+ C <- lapply(tt$name,getBerry,tt)
+do.call(rbind,C) 
 
 
 ```
