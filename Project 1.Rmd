@@ -4,7 +4,9 @@ author: "Jiatao Wang"
 date: "9/18/2021"
 output: html_document
 ---
-## This Project aims to accessing data from API, and make some Exploratory Data Analysis. 
+## Goal 
+
+__This Project aims to accessing data from API, and make some Exploratory Data Analysis.__ 
 
 API that is using in this project can be access ['here'](https://pokeapi.co/)  
 Pokémon is childhood memory for lots of people.  
@@ -39,6 +41,37 @@ library(dplyr)
 
 #parsed <- T$content %>% rawToChar() %>% fromJSON()
 #str(parsed, max.level = 1)
+
+get_endpoints <- function(endpoint){
+  overall <- GET(paste0("https://pokeapi.co/api/v2/",endpoint))
+  getdata_text_all <- content(overall,"text")
+  getdata_json_all<- fromJSON(getdata_text_all, flatten = TRUE)
+  look_all <- as_tibble(getdata_json_all$results)
+  return(look_all)
+  
+  if(endpoint == "berry"){
+  }
+}
+
+  
+  
+  getdata_textRate <- content(Rate,"text")
+getdata_json_Rate<- fromJSON(getdata_textRate, flatten = TRUE)
+Growth_Rate_look <- as_tibble(getdata_json_Rate$results)
+  
+#  E <- GET("https://pokeapi.co/api/v2/berry/")
+  getdata_text <- content(E,"text")
+  getdata_json<- fromJSON(getdata_text, flatten = TRUE)
+  berry_look <- as_tibble(getdata_json$results)
+  
+  
+  
+  Rate <- GET("https://pokeapi.co/api/v2/growth-rate/")
+getdata_textRate <- content(Rate,"text")
+getdata_json_Rate<- fromJSON(getdata_textRate, flatten = TRUE)
+Growth_Rate_look <- as_tibble(getdata_json_Rate$results)
+  
+
 #C <- GET("https://pokeapi.co/api/v2/{endpoint}")
 #D <- GET("https://pokeapi.co/api/v2")
 #E <- GET("https://pokeapi.co/api/v2/berry/")
@@ -350,9 +383,9 @@ View(dfname)
 
 # this return the  pokemon name and its lots of attributes. 
 
-get_growth_species <- function(s,i) {
+get_growth_species <- function(s,i,tt) {
 
-    url <- Growth_Rate_look$url[which(Growth_Rate_look$name==s)]
+    url <- tt$url[which(tt$name==s)]
     r <- GET(url=url)
     x <- content(r, 'text')
     Json_x<- fromJSON(x, flatten = TRUE)
@@ -390,6 +423,7 @@ get_growth_species <- function(s,i) {
     Evolves.poke = Evolves,
     Generation.poke = Generation,
     Form_Switchable.poke = Form_Switchable,
+    
     Habit.poke = Habit,
     Hatch_COunter.poke =Hatch_COunter,
     Shape.poke = Shape
