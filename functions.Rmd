@@ -10,6 +10,7 @@ output: html_document
 library(httr)
 library(jsonlite)
 library(dplyr)
+library(tidyverse)
 
 # This is the function that input the endpoints, as well as the choices of endpoints 
 #for example, the endpoint berry contains 64 choices, that is, 64 types of berry. 
@@ -24,7 +25,7 @@ library(dplyr)
 #The total number of categories for the growth rate is 6. if you enter the number of choice greater than 6, it will return 
 # error, same rule applies to the endpoint berry
 # for the endpoint item, if the choice is 0, it will return all the items and its attribute,
-#if the choice is not zero, it will return up to numbers of item you want to get up to your choice. 
+#if the choice is not zero, it will return up to numbers of item you want to get up to your choice. /same rule applies to endpoint move. 
 
 
 get_endpoints <- function(endpoint,choice){
@@ -96,6 +97,20 @@ get_endpoints <- function(endpoint,choice){
                  
                }
              }
+            
+            if(endpoint == "move"){
+              if(choice == 0){
+                C <- lapply(tt$name,get_moves,tt)
+                D<-do.call(rbind,C)
+                return(D)
+              }
+              if(choice !=0){
+                C <- lapply(tt$name[1:choice],get_moves,tt)
+                D<-do.call(rbind,C)
+                return(D)
+              
+              }
+            }
   
   
   
@@ -124,15 +139,62 @@ Functions are
   **get_growth_rate
   **getBerry_Flavors
   **getBerry 
+  **get_item
+  **
+__This Function get the moves, which are the skills of Pokémon in battle. In battle, a Pokémon uses one move each turn. Some moves (including those learned by Hidden Machine) can be used outside of battle as well, usually for the purpose of removing obstacles or exploring new areas.__
+```{r}
+Rate <- GET("https://pokeapi.co/api/v2/move/?limit=1000")
+getdata_textRate <- content(Rate,"text")
+getdata_json_Rate<- fromJSON(getdata_textRate, flatten = TRUE)
+tt <- as_tibble(getdata_json_Rate$results)  
+
+get_moves <- function(s,tt) {
+
+    url <- tt$url[which(tt$name==s)]
+    r <- GET(url=url)
+    x <- content(r, 'text')
+    Json_x<- fromJSON(x, flatten = TRUE)
+    # pull data from several end points(which are all attributes associate with growth_rate)
+    Name <- Json_x$name
+    Power <- ifelse(!is.null(Json_x$power),Json_x$power,NA)
+    power_point <- Json_x$pp
+    Priority <-Json_x$priority
+    target <- Json_x$target$name
+    type <- Json_x$type$name
+    damage_class <- Json_x$damage_class$name
+    effect <- Json_x$effect_entries$effect
+    short_effect <- Json_x$effect_entries$short_effect
+    generation <- Json_x$generation$name
+    
+#for (i in 1:length(Json_x$pokemon_species$url)){
+    
+    
+    moves <- tibble(
+    name = Name,
+    power = Power ,
+    Power.Point = power_point,
+    priority =Priority,
+    target_name = target ,
+    Type = type,
+    Damage_class = damage_class,
+    effects = effect,
+    short_effects = short_effect,
+    Generation = generation
+  )
+   return(moves)
+
+    
+}    
+
+C <- lapply(tt$name[1:50],get_moves,tt)
+D<- do.call(rbind,C)
 
 
-
-
-
+```
 __This function get species, while access the several endpoints, the pokeapi is built with endpoints with endpoints, that is, growth-rate is one endpoints but some of the returned variables we can get are also endpoints. We access the pokemon-species(endpoint) inside the growth rate endpoint.__
 ```{r}  
 #ability endpoint  interesting 
-Rate <- GET("https://pokeapi.co/api/v2/ability/?limit=1000$offset=1000")
+Rate <- GET("https://pokeapi.co/api/v2/ability/?limit=1000")
 getdata_textRate <- content(Rate,"text")
 getdata_json_Rate<- fromJSON(getdata_textRate, flatten = TRUE)
 tt <- as_tibble(getdata_json_Rate$results)  
@@ -147,7 +209,7 @@ tt <- as_tibble(getdata_json_Rate$results)
 #}
 
                              
-                               
+#functions are slowed by the ifelse statement..........                               
  
 Rate <- GET("https://pokeapi.co/api/v2/growth-rate/")
 getdata_textRate <- content(Rate,"text")
@@ -283,10 +345,11 @@ getdata_textRate <- content(Rate,"text")
 getdata_json_Rate<- fromJSON(getdata_textRate, flatten = TRUE)
 tt <- as_tibble(getdata_json_Rate$results)    
 
-Rate <- GET("https://pokeapi.co/api/v2/item/1")
+Rate <- GET("https://pokeapi.co/api/v2/item/141")
 getdata_textRate <- content(Rate,"text")
 getdata_json_Rate<- fromJSON(getdata_textRate, flatten = TRUE)
-
+str(getdata_json_Rate$attributes$name)
+#unite(getdata_json_Rate$attributes$name,sep = ';')
 
 get_item <- function(s,tt) {
 
@@ -294,23 +357,29 @@ get_item <- function(s,tt) {
     r <- GET(url=url)
     x <- content(r, 'text')
     Json_x<- fromJSON(x, flatten = TRUE)
-    # pull data from several end points(which are all attributes associate with growth_rate)
+    # pull data from several end points(which are all attributes associate with items)
     Name <- Json_x$name
+    Attributes <- paste(Json_x$attributes$name,collapse=";")
     Category <- Json_x$category$name
     Cost <- Json_x$cost
-    baby_trigger_for <- ifelse(!is.null(Json_x$baby_trigger_for),Json_x$baby_trigger_for,NA)
-    fling_effect <-ifelse(!is.null(Json_x$fling_effect),Json_x$fling_effect,NA)
-    fling_power <- ifelse(!is.null(Json_x$fling_effect),Json_x$fling_effect,NA)
+    Effect <- Json_x$effect_entries$effect
+    Short_effect <- Json_x$effect_entries$short_effect
+    #baby_trigger_for <- ifelse(!is.null(Json_x$baby_trigger_for),Json_x$baby_trigger_for, NA)
+    #fling_effect <-ifelse(!is.null(Json_x$fling_effect),Json_x$fling_effect,NA)
+
+    #fling_power <- ifelse(!is.null(Json_x$fling_effect),Json_x$fling_effect,NA)
 
     
     #create the tibble that containing the names of the berries as well cols of their attributes. 
   df <- tibble(
      name = Name,
+     attributes = Attributes,
      category = Category,
      cost  = Cost,
-     Baby_trigger_for = baby_trigger_for,
-     Fling_effect = fling_effect,
-     Fling_power = fling_power
+     effect = Effect ,
+     short_effect = Short_effect
+     #Baby_trigger_for = baby_trigger_for,
+     #Fling_power = fling_power
      
   )
    return(df)
@@ -324,7 +393,7 @@ for (i in 2:length(tt$name)){
 
 }  
 #This is a quicker way..... much quicker jesus   
-C <- lapply(tt$name[1:10],get_item,tt)
+C <- lapply(tt$name[1:150],get_item,tt)
 D<-do.call(rbind,C)
   
 
