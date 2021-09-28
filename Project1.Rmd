@@ -1,23 +1,26 @@
-ST558 Project 1
-================
-Jiatao Wang
-9/18/2021
+---
+title: "ST558 Project 1"
+author: "Jiatao Wang"
+date: "9/18/2021"
+---
+# Goal 
 
-# Goal
+__This Project aims to accessing data from API, and make some Exploratory Data Analysis.__ 
 
-**This Project aims to accessing data from API, and make some
-Exploratory Data Analysis.**
-
-API that is using in this project can be access
-[‘here’](https://pokeapi.co/)  
+API that is using in this project can be access ['here'](https://pokeapi.co/)  
 Pokémon is childhood memory for lots of people.  
 I used to play Pokémon on Game Boy Advance SP  
-![SP](/Users/CKA/Desktop/Master%202021%20Fall/ST558%20data%20science%20for%20statistician/SP.jpg)  
-![Pikachu](/Users/CKA/Desktop/Master%202021%20Fall/ST558%20data%20science%20for%20statistician/pikachu.png)  
-\# The packages in R that are needed in this project *knitr *httr
-*jsonlite *tibble *tidyverse *dplyr \*rmarkdown
-
-``` r
+![SP](/Users/CKA/Desktop/Master 2021 Fall/ST558 data science for statistician/SP.jpg)  
+![Pikachu](/Users/CKA/Desktop/Master 2021 Fall/ST558 data science for statistician/pikachu.png)  
+# The packages in R that are needed in this project 
+    *knitr
+    *httr
+    *jsonlite
+    *tibble 
+    *tidyverse
+    *dplyr 
+    *rmarkdown
+```{r,eval = FALSE}
 knitr::opts_chunk$set(echo = TRUE, include = TRUE, warning= FALSE, message=FALSE)
 rmarkdown::render(
   input = "Project1.Rmd", 
@@ -26,44 +29,37 @@ rmarkdown::render(
   params = NULL,
   quiet = FALSE
                  )
+
 ```
+# Here is the code I need to contact API and extract some data from the pokeapi 
 
-# Here is the code I need to contact API and extract some data from the pokeapi
 
-**This is the function that input the endpoints, as well as the choices
-you can specify with those endpoints**  
-*note:please read in the functions listed below before read in this
-universal function* *note:all choices you can look up is the output
-**tt** under sections which is specified and described in each
-function*  
-Input endpoint includes: *berry  
+
+
+
+__This is the function that input the endpoints, as well as the choices you can specify with those endpoints__  
+*note:please read in the functions listed below before read in this universal function* 
+*note:all choices you can look up is the output __tt__ under sections which is specified and described in each function*  
+Input endpoint includes:
+*berry  
 *growth-rate  
 *berry-flavor  
 *item  
-\*move  
-Choices can be 0 or other numeric values.
+*move  
+Choices can be 0 or other numeric values.  
 
 How to use this universal function:
 
-**for example, the endpoint berry contains 64 choices, that is, 64 types
-of berry.** **for the berry data, if the choice is 0, it returns all the
-berries and most of their attributes.** **for the growth-rate data, if
-the choice is 0, it will returns the growth rate, corresponding formula
-as well as the levels with corresponding experience needed. In this
-case, all pokemon species share same experience points needed to have
-each level up.** **if the choice is not 0 for the growth-rate endpoint,
-it will return the pokemon species which are under the category of
-growth-rate, for example, if we input choice = 1, it will return the all
-the pokemon species that are categorized as slow growth-rate. etc….**
-**The total number of categories for the berry flavor is 5.** **The
-total number of categories for the growth rate is 6. if you enter the
-number of choice greater than 6, it will return error, same rule applies
-to the endpoint berry** **for the endpoint item/move, if the choice is
-0, it will return all the items/moves and its attribute, if the choice
-is not zero, it will return up to numbers of item/move you want to get
-up to your choice.**
+**for example, the endpoint berry contains 64 choices, that is, 64 types of berry.**
+**for the berry data, if the choice is 0, it returns all the berries and most of their attributes.** 
+**for the growth-rate data, if the choice is 0, it will returns the growth rate, corresponding formula as well as the levels with corresponding experience needed. In this case, all pokemon species share same experience points needed to have each level up.** 
+ **if the choice is not 0 for the growth-rate endpoint, it will return the pokemon species which are under the category of growth-rate, for example, if we input choice = 1, it will return the all the pokemon species that are categorized as slow growth-rate. etc....**
+**The total number of categories for the berry flavor is 5.** 
+**The total number of categories for the growth rate is 6. if you enter the number of choice greater than 6, it will return error, same rule applies to the endpoint berry**
+**for the endpoint item/move, if the choice is 0, it will return all the items/moves and its attribute, if the choice is not zero, it will return up to numbers of item/move you want to get up to your choice.** 
 
-``` r
+```{r}
+
 library(httr)
 library(jsonlite)
 library(dplyr)
@@ -156,34 +152,36 @@ get_endpoints <- function(endpoint,choice){
             }
 
 }
-```
 
-## Functions
+           
+``` 
 
-pokeapi is kind of tricky restAPI. one endpoint may contains several
-other endpoints. Thoughts were wandering around my minds.
+## Functions  
 
-***These are individual functions that I am using in the universal
-function above.We could use those functions to return the data, but we
-need to set up some pre-data to access those functions. For example, we
-need to get berry names and its urls before we can use its function
-written by me. Codes are provided below.***
+pokeapi is kind of tricky restAPI. one endpoint may contains several other endpoints.
+Thoughts were wandering around my minds. 
 
-Functions are **get\_growth\_species **get\_growth\_rate
-**get\_Berry\_Flavors **get\_Berry **get\_item **get\_moves
+__*These are individual functions that I am using in the universal function above.We could use those functions to return the data, but we need to set up some pre-data to access those functions. For example, we need to get berry names and its urls before we can use its function written by me. Codes are provided below.*__ 
 
-**This Function get the moves, which are the skills of Pokémon in
-battle. In battle, a Pokémon uses one move each turn. Some moves
-(including those learned by Hidden Machine) can be used outside of
-battle as well, usually for the purpose of removing obstacles or
-exploring new areas.**
+Functions are 
+  **get_growth_species
+  **get_growth_rate
+  **get_Berry_Flavors
+  **get_Berry 
+  **get_item
+  **get_moves
+
+
+
+
+
+__This Function get the moves, which are the skills of Pokémon in battle. In battle, a Pokémon uses one move each turn. Some moves (including those learned by Hidden Machine) can be used outside of battle as well, usually for the purpose of removing obstacles or exploring new areas.__ 
 
 tt is the dataframe containing all the names of moves and urls  
-get\_moves access each move by specifying its name and input tt.  
-s = name of the move (can see it in tt) (quote s for the input) tt =
-dataset obtained in the code above the this function.
-
-``` r
+get_moves access each move by specifying its name and input tt.  
+s = name of the move (can see it in tt) (quote s for the input) 
+tt = dataset obtained in the code above the this function. 
+```{r}
 #Rate <- GET("https://pokeapi.co/api/v2/move/?limit=1000")
 #getdata_textRate <- content(Rate,"text")
 #getdata_json_Rate<- fromJSON(getdata_textRate, flatten = TRUE)
@@ -229,21 +227,20 @@ get_moves <- function(s,tt) {
 
 #C <- lapply(tt$name[1:50],get_moves,tt)
 #D<- do.call(rbind,C)
+
+
 ```
 
-**This function get species, while access the several endpoints, the
-pokeapi is built with endpoints with endpoints, that is, growth-rate is
-one endpoints but some of the returned variables we can get are also
-endpoints. We access the pokemon-species(endpoint) inside the growth
-rate endpoint.**
 
-tt is the dataframe containing all the names of growth-rate and urls
-this function take input s = one of the growth rate category (can see it
-in tt) (quote s for the input) i = the target species within the growth
-rate.  
-tt= the dataset obtained in the code above the function
 
-``` r
+__This function get species, while access the several endpoints, the pokeapi is built with endpoints with endpoints, that is, growth-rate is one endpoints but some of the returned variables we can get are also endpoints. We access the pokemon-species(endpoint) inside the growth rate endpoint.__
+
+tt is the dataframe containing all the names of growth-rate and urls 
+this function take input 
+  s = one of the growth rate category  (can see it in tt) (quote s for the input) 
+  i = the target species within the growth rate.  
+  tt= the dataset obtained in the code above the function  
+```{r}  
 #functions are slowed by the ifelse statement..........                               
  
 #Rate <- GET("https://pokeapi.co/api/v2/growth-rate/")
@@ -314,16 +311,18 @@ get_growth_species <- function(s,i,tt) {
 #  }
    
 #}
+
 ```
 
-**This is the function written to get level and experience as well as
-growth-rate/growth-formula**  
+
+
+
+__This is the function written to get level and experience as well as growth-rate/growth-formula__  
 tt is the data frame containing all the names of growth-rate and urls  
 This function takes input:  
-s = the growth rate category (can see it in tt) (quote s for the input)
-tt= the data set obtained in the code above the function
-
-``` r
+  s = the growth rate category  (can see it in tt) (quote s for the input) 
+  tt= the data set obtained in the code above the function  
+```{r}
 get_growth_rate <- function(s,tt) {
 
     url <- tt$url[which(tt$name==s)]
@@ -359,16 +358,19 @@ get_growth_rate <- function(s,tt) {
 #for (i in 2:length(Growth_Rate_look$name)){
 #    df2 <- cbind(df2, get_growth_rate(Growth_Rate_look$name[i])[,1:2])
 #}
+
+
+
 ```
 
-**This is the function written to get item we can get from pokemon as
-well as attributes of items** tt is the data frame containing all the
-names of items and urls  
+__This is the function written to get item we can get from pokemon as well as attributes of items__ 
+tt is the data frame containing all the names of items and urls  
 This function takes input:  
-s = each item name (can see it in tt) (quote s for the input) tt= the
-data set obtained in the code above the function
-
-``` r
+  s = each item name  (can see it in tt) (quote s for the input) 
+  tt= the data set obtained in the code above the function  
+```{r}
+  
+  
 #Rate <- GET("https://pokeapi.co/api/v2/item/?limit=1000")
 #getdata_textRate <- content(Rate,"text")
 #getdata_json_Rate<- fromJSON(getdata_textRate, flatten = TRUE)
@@ -422,16 +424,18 @@ get_item <- function(s,tt) {
 #This is a quicker way..... much quicker 
 #C <- lapply(tt$name[1:150],get_item,tt)
 #D<-do.call(rbind,C)
+
 ```
 
-**This function return the berries names that share same type of flavor,
-as well as some attributes of flavors.** tt is the dataframe containing
-all the names of berry-flavor and urls  
-This function takes input:  
-s = each type of flavor (can see it in tt) (quote s for the input) tt=
-the data set obtained in the code above the function
 
-``` r
+
+__This function return the  berries names that share same type of flavor, as well as some attributes of flavors.__
+tt is the dataframe containing all the names of berry-flavor and urls  
+This function takes input:  
+  s = each type of flavor (can see it in tt) (quote s for the input) 
+  tt= the data set obtained in the code above the function  
+```{r}
+
 # after getting the data set of berry containing the name and its url links, writing the function that call the attributes of each type of berry
   # caution: this function only return the single berry that you are interesed. 
   
@@ -467,15 +471,23 @@ the data set obtained in the code above the function
   
 # C <- lapply(tt$name[1],getBerry_Flavors,tt)
 #D<-do.call(rbind,C) 
+  
+  
+  
+  
+  
 ```
 
-**This is the function written to get berry and its attributes.** tt is
-the data frame containing all the names of berry and urls  
-This function takes input:  
-s =name of the berry (can see it in tt) (quote s for the input) tt= the
-data set obtained in the code above the function
 
-``` r
+
+
+
+__This is the function written to get berry and its attributes.__
+tt is the data frame containing all the names of berry and urls  
+This function takes input:  
+s =name of the berry (can see it in tt) (quote s for the input) 
+tt= the data set obtained in the code above the function  
+```{r}
 #  E <- GET("https://pokeapi.co/api/v2/berry/?limit=1000")
 #  getdata_text <- content(E,"text")
 #  getdata_json<- fromJSON(getdata_text, flatten = TRUE)
@@ -524,50 +536,43 @@ data set obtained in the code above the function
 #}
 # C <- lapply(tt$name,getBerry,tt)
 #do.call(rbind,C) 
+
+
 ```
 
-### Here is some description of varaibles in the data set
 
-They are all attributes of different type of berry in the game Pokemon
-**growth\_time**– Time it takes the tree to grow one stage, in hours.
-Berry trees go through four of these growth stages before they can be
-picked.
 
-**max\_harvest**– The maximum number of these berries that can grow on
-one tree in Generation IV.
+### Here is some description of varaibles in the data set 
+They are all attributes of different type of berry in the game Pokemon 
+  __growth_time__-- Time it takes the tree to grow one stage, in hours. Berry trees go through four of these growth stages before they can be picked.
 
-**natural\_gift\_power**– The power of the move “Natural Gift” when used
-with this Berry.
+  __max_harvest__-- The maximum number of these berries that can grow on one tree in Generation IV.
 
-**natural\_gift\_type**– The type inherited by “Natural Gift” when used
-with this Berry.
+  __natural_gift_power__-- The power of the move "Natural Gift" when used with this Berry.  
+  
+  __natural_gift_type__-- The type inherited by "Natural Gift" when used with this Berry.  
+  
+  __size__-- The size of this Berry, in millimeters.
 
-**size**– The size of this Berry, in millimeters.
+  __firmness__-- The firmness of this berry, used in making Pokéblocks or Poffins.
 
-**firmness**– The firmness of this berry, used in making Pokéblocks or
-Poffins.
+  __smoothness__-- The smoothness of this Berry, used in making Pokéblocks or Poffins.
+  
+  __soil_dryness__-- The speed at which this Berry dries out the soil as it grows. A higher rate means the soil dries more quickly.
 
-**smoothness**– The smoothness of this Berry, used in making Pokéblocks
-or Poffins.
-
-**soil\_dryness**– The speed at which this Berry dries out the soil as
-it grows. A higher rate means the soil dries more quickly.
-
-Let’s look at this data set first
-
-``` r
+Let's look at this data set first 
+```{r, include= TRUE }
 df<-get_endpoints("berry",0)
 ```
 
-### Then we did some exploratory data analysis on the orignial dataset.
-
-we create two new variables as well as categorizing some potential
-predictors *one is **Growth\_Rate\_in\_Hour**,which is the Size divided
-by growth time. *another one is **Pokeblocks\_Productivity** which is
-the smoothness divided by soil dryness. \*categorized Size and
-Growth\_Rate\_in\_Hour.
-
-``` r
+### Then we did some exploratory data analysis on the orignial dataset. 
+we create two new variables as well as categorizing some potential predictors 
+  *one is __Growth_Rate_in_Hour__,which is the Size divided by growth time. 
+  *another one is __Pokeblocks_Productivity__ which is the smoothness divided by soil dryness. 
+  *categorized Size and Growth_Rate_in_Hour.
+  
+  
+```{r, include= TRUE }
 library(tidyverse)
 # create two new variables:
 NewPoke <- df %>% mutate(Growth_Rate_in_Hour = round(Size/Growth_Time,digits=2), Pokeblocks_Productivity = round(Smoothness/Soil_Dryness,digits =2) )
@@ -585,76 +590,41 @@ m<-ifelse(NewPoke$Size >= 100, "Big",
 NewPoke$Growth_Rate_Category <- v
 NewPoke$Size_Category <- m
 ```
-
 Now the data set look like this:
 
-``` r
+```{r, include= TRUE }
 head(NewPoke,10)
 ```
 
-Now We create some tables using the new data set. NewPoke!
+Now We create some tables using the new data set. NewPoke! 
 
 table 1  
-Firmness of the berry versus Natural Gift Type
-
-``` r
+Firmness of the berry versus Natural Gift Type 
+```{r, include= TRUE }
 # contingency table 
 table(NewPoke$Firmness, NewPoke$Natrual_Gift_Type)
 ```
-
-    ##             
-    ##              bug dark dragon electric fighting fire flying ghost grass ground ice normal poison psychic rock steel water
-    ##   hard         2    0      0        0        1    0      0     2     2      3   0      0      2       0    2     0     1
-    ##   soft         1    2      2        0        1    3      2     1     1      1   0      0      0       2    1     0     1
-    ##   super-hard   0    1      2        1        0    1      1     1     0      0   1      0      1       1    0     1     1
-    ##   very-hard    0    0      0        0        2    0      1     0     1      0   3      0      1       1    0     1     1
-    ##   very-soft    1    1      0        3        0    0      0     0     0      0   0      1      0       0    1     1     0
-
 table 2  
-Firmness versus Growth Rate in Category We can see from this table that
-almost half of the berry growth slowly, and in this slow category, the
-hard firmness types tak up the most count
-
-``` r
+Firmness versus Growth Rate in Category 
+We can see from this table that almost half of the berry growth slowly, and in this slow category, the hard firmness types tak up the most count  
+```{r}
 table(NewPoke$Firmness, NewPoke$Growth_Rate_Category)
 ```
-
-    ##             
-    ##              Fast General slow Very Slow
-    ##   hard          1       4    9         1
-    ##   soft          2       3    6         7
-    ##   super-hard    1       2    7         2
-    ##   very-hard     1       1    6         3
-    ##   very-soft     0       1    3         4
-
 table 3  
 Size Category versus Firmness of the berry  
-There is no distinct linear relationship between size and firmness
-
-``` r
+There is no distinct linear relationship between size and firmness  
+```{r}
 table(NewPoke$Size_Category,NewPoke$Firmness)
 ```
 
-    ##         
-    ##          hard soft super-hard very-hard very-soft
-    ##   Big       9   10          4         6         3
-    ##   Medium    4    2          5         3         1
-    ##   Small     2    6          3         2         4
-
-Next step: `summarize` statistics from the data NewPoke *W is the
-summary statistics grouped by Size\_category. *W2 is the summary
-statistics grouped by Firmness. \*W3 is the summary statistics grouped
-by Growth\_Rate\_Category. from W we can see that size medium has
-largest inter-quantile range, while pokeblack productivity have no clear
-relationship with size of the berry.  
-from W2 we can see that firmness type hard has the largest median growth
-rate. no distinct size different cross types of firmness. from W3 we can
-see that growth rate is positively linear related to size mean. they
-have correlations since we used size to compute growth-rate. However:
-there is a noticeable negative relationship between growth rate and
-pokeblock productivity. this is an interesting find.
-
-``` r
+Next step:  `summarize` statistics from the data NewPoke 
+  *W is the summary statistics grouped by Size_category. 
+  *W2 is the summary statistics grouped by Firmness.
+  *W3 is the summary statistics grouped by Growth_Rate_Category. 
+  from W we can see that size medium has largest inter-quantile range, while pokeblack productivity have no clear relationship with size of the berry.  
+  from W2 we can see that firmness type hard has the largest median growth rate. no distinct size different cross types of firmness. 
+  from W3 we can see that growth rate is positively linear related to size mean. they have correlations since we used size to compute growth-rate. However: there is a noticeable negative relationship between growth rate and pokeblock productivity. this is an interesting find. 
+```{r}
 W <-NewPoke %>% group_by(Size_Category) %>% summarise(IQR_growth_rate = IQR(Growth_Rate_in_Hour), Size_mean = mean(Size), pokeblock_productivity_mean = mean(Pokeblocks_Productivity))
 W
 
@@ -665,55 +635,46 @@ W3 <- NewPoke %>% group_by(Growth_Rate_Category) %>% summarise(mean_growrate = m
 W3
 ```
 
-Finally, we create some simple graphs to visualize the data NewPoke
 
-This is the graph exploring the count of berry that is categorized by
-firmness and size within each type of firmness.  
-Almost half of the big berries are hard and soft. While most of the
-small berries are soft or very-soft
+Finally, we create some simple graphs to visualize the data NewPoke 
 
-``` r
+
+This is the graph exploring the count of berry that is categorized by firmness and size within each type of firmness.  
+Almost half of the big berries are hard and soft. While most of the small berries are soft or very-soft  
+```{r, include= TRUE }
 g<-ggplot(NewPoke,aes(x = Firmness))
   g + 
     geom_bar(aes(fill = as.factor(Size_Category)),
                position = "dodge") + 
     labs(x = "Firmness", y = "Count", title = "Firmness with Category Size") + 
     scale_fill_discrete(name = "Size Category") 
-```
+```  
 
-![](README_files/figure-gfm/unnamed-chunk-17-1.png)<!-- -->
 
-This is the graph exploring the count of firmness and size. This is a
-scatter plot. And most of the berries are within the size 200.
 
-``` r
+This is the graph exploring the count of firmness and size. 
+This is a scatter plot. And most of the berries are within the size 200. 
+```{r, include= TRUE }
 g<-ggplot(NewPoke,
           aes(x = Firmness,
               y = Size))
   g + 
     geom_count(shape=23, fill="blue", color="darkred") + 
     labs(x = "Firmness", y = "Size",title = "Size VS Firmness") 
-```
-
-![](README_files/figure-gfm/unnamed-chunk-18-1.png)<!-- --> this is the
-graph that create histogram of size categorized by growth\_rate this
-result is basically the same as the scatter plot above
-
-``` r
+```    
+this is the graph that create histogram of size categorized by growth_rate
+this result is basically the same as the scatter plot above 
+```{r, include= TRUE }
 g<-ggplot(NewPoke,aes(x = Size ,color = Growth_Rate_Category))
   g + 
     geom_histogram(fill = "white",position = "dodge",binwidth = 15)+ 
     labs(x = "Size", y = "count",title = "Size of Berries with GrowthRate") 
-```
+```  
 
-![](README_files/figure-gfm/unnamed-chunk-19-1.png)<!-- -->
 
-This is the graph creating the barplots that associate with Size and
-grow\_rate  
-It is clear that hard and soft berries together take up the counts
-towards almost half total number of berries.
-
-``` r
+This is the graph creating the barplots that associate with Size and grow_rate   
+It is clear that hard and soft berries together take up the counts towards almost half total number of berries. 
+```{r, include= TRUE } 
 g<-ggplot(NewPoke,
           aes(x = Size_Category))
   g + 
@@ -726,13 +687,11 @@ g<-ggplot(NewPoke,
     labs(title = "Size Categorized by Growth Rate Paneled by Firmness ")
 ```
 
-![](README_files/figure-gfm/unnamed-chunk-20-1.png)<!-- -->
 
-This is the boxplot paneled by growth\_rate, and size within each
-category of growth\_rate. The growth-rate fast/general/slow share the
-same size mean. There are a few berry growing fast.
 
-``` r
+This is the boxplot paneled by growth_rate, and size within each category of growth_rate. 
+The growth-rate fast/general/slow share the same size mean. There are a few berry growing fast. 
+```{r, include= TRUE }  
  g<-ggplot(NewPoke,aes(x = Growth_Rate_Category,
                        y = Size))
   g + 
@@ -743,15 +702,12 @@ same size mean. There are a few berry growing fast.
     geom_jitter(aes(color = as.factor(Size_Category))) + 
     scale_y_continuous() + 
     scale_color_discrete(name = "y")
-```
+```  
 
-![](README_files/figure-gfm/unnamed-chunk-21-1.png)<!-- -->
 
-This is the scatter plot of size and growth\_rate\_in\_hour(they should
-have high correlation since growth\_rate in hour is generated by size)  
-Several Outliers in this plot
-
-``` r
+This is the scatter plot of size and growth_rate_in_hour(they should have high correlation since growth_rate in hour is generated by size)  
+Several Outliers in this plot 
+```{r, include= TRUE }  
  g<-ggplot(NewPoke,
            aes(x = Size, y =Growth_Rate_in_Hour))
   g + 
@@ -765,14 +721,10 @@ Several Outliers in this plot
     scale_x_continuous(name = "size")+ 
     scale_color_discrete(name = "Firmness")+
     scale_shape_discrete(name = "Size_Category")
-```
-
-![](README_files/figure-gfm/unnamed-chunk-22-1.png)<!-- --> This is
-another way to visualize the Size vs Growth Rate in hour  
-This plot maybe more easy to visualize. There is basically a linear
-relationship between size and its growth-rate in hour.
-
-``` r
+```  
+This is another way to visualize the Size vs Growth Rate in hour  
+This plot maybe more easy to visualize. There is basically a linear relationship between size and its growth-rate in hour. 
+```{r, include= TRUE }
  g<-ggplot(NewPoke,aes(x = Size, 
                        y =Growth_Rate_in_Hour))
   g + 
@@ -786,11 +738,17 @@ relationship between size and its growth-rate in hour.
     scale_shape_manual(values = c(3:7))+
     scale_color_discrete(name = "Size_Category")+
     scale_shape_discrete(name="Firmness")
-```
+```   
+  
+  
 
-![](README_files/figure-gfm/unnamed-chunk-23-1.png)<!-- -->
+    
+  
 
-``` r
+
+
+
+```{r}
 type_effectiveness <- function(type, strength="all", direction="all"){
 
   query <- "type/?limit=20"
