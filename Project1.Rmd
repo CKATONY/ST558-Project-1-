@@ -32,15 +32,8 @@ knitr::include_graphics('/Users/CKA/Desktop/Master 2021 Fall/ST558 data science 
     *tidyverse
     *dplyr 
     *rmarkdown
-```{r,eval = FALSE}
+```{r setup, include = FALSE}
 knitr::opts_chunk$set(echo = TRUE, warning= FALSE, message=FALSE)
-rmarkdown::render(
-  input = "Project1.Rmd", 
-  output_format = "github_document", 
-  output_file = "README.md",
-  params = NULL,
-  quiet = FALSE
-                 )
 
 ```
 # Here is the code I need to contact API and extract some data from the pokeapi 
@@ -93,26 +86,25 @@ get_endpoints <- function(endpoint,choice){
   
   
              if(endpoint == "berry"){
-                 if(choice == 0){
+               if(choice == 0){
                     C <- lapply(tt$name,get_Berry,tt)
                        D<-do.call(rbind,C)
                        return(D)
                         }
-                      
-                 if(choice != 0){
+               if(choice != 0){
                     C <- lapply(tt$name[choice],get_Berry,tt)
                        D<-do.call(rbind,C)
                        return(D)
                }
-             }
-  
-                if(endpoint == "growth-rate"){
-                  if(choice == 0){
-                     C <- lapply(tt$name,get_growth_rate,tt)
-                       D<- do.call(rbind,C) 
-                       return(D)
-                }
-                if(choice != 0){
+             }  
+
+             if(endpoint == "growth-rate"){
+               if(choice == 0){
+                 C <- lapply(tt$name,get_growth_rate,tt)
+                 D<- do.call(rbind,C) 
+                 return(D)
+                 } 
+               if(choice != 0){
                    PokeMon1 <- get_growth_species(tt$name[choice],1,tt)
                 #for (i in 1:length(look_all$name)){
                     c = length(fromJSON(content(GET(tt$url[choice]),"text"),flatten = TRUE)$pokemon_species$name)
@@ -123,37 +115,34 @@ get_endpoints <- function(endpoint,choice){
                         }
                       }
                     }
-              }
-              if(endpoint == "berry-flavor"){
-                if(choice == 0){
-                     C <- lapply(tt$name,get_Berry_Flavors,tt)
-                       D<-do.call(rbind,C) 
-                               return(D) 
-                          }
-                        
+              }         
                   
-                 if(choice != 0){
+             if(endpoint == "berry-flavor"){
+                if(choice == 0){
+                    C <- lapply(tt$name,get_Berry_Flavors,tt)
+                    D<-do.call(rbind,C) 
+                    return(D) 
+                          }
+                if(choice != 0){
                     C <- lapply(tt$name[choice],get_Berry_Flavors,tt)
                     D<-do.call(rbind,C) 
                     return(D)
                }
-              }
-               
+             }
+  
              if(endpoint == "item"){
                if(choice == 0){
                  C <- lapply(tt$name,get_item,tt)
                  D<-do.call(rbind,C)
                  return(D)
-                 
                }
                if(choice != 0){
                  C <- lapply(tt$name[1:choice],get_item,tt)
                  D<-do.call(rbind,C)
                  return(D)
-                 
                }
              }
-            
+  
             if(endpoint == "move"){
               if(choice == 0){
                 C <- lapply(tt$name,get_moves,tt)
@@ -164,10 +153,8 @@ get_endpoints <- function(endpoint,choice){
                 C <- lapply(tt$name[1:choice],get_moves,tt)
                 D<-do.call(rbind,C)
                 return(D)
-              
               }
             }
-
 }
 
            
@@ -183,7 +170,7 @@ Thoughts were wandering around my minds.
 __*These are individual functions that I am using in the universal function above.We could use those functions to return the data, but we need to set up some pre-data to access those functions. For example, we need to get berry names and its urls before we can use its function written by me. Codes are provided below.*__  
 
 Functions are:  
-  1.`get_moves` 
+  1.`get_moves`  
   2.`get_growth_species`  
   3.`get_growth_rate`  
   4.`get_item`  
@@ -226,9 +213,6 @@ get_moves <- function(s,tt) {
     short_effect <- Json_x$effect_entries$short_effect
     generation <- Json_x$generation$name
     
-#for (i in 1:length(Json_x$pokemon_species$url)){
-    
-    
     moves <- tibble(
     name = Name,
     power = Power ,
@@ -242,8 +226,6 @@ get_moves <- function(s,tt) {
     Generation = generation
   )
    return(moves)
-
-    
 }    
 
 #C <- lapply(tt$name[1:50],get_moves,tt)
