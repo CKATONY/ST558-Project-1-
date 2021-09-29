@@ -25,17 +25,6 @@ I used to play Pokémon on Game Boy Advance SP
     *dplyr 
     *rmarkdown
 
-``` r
-knitr::opts_chunk$set(echo = TRUE, warning= FALSE, message=FALSE)
-rmarkdown::render(
-  input = "Project1.Rmd", 
-  output_format = "github_document", 
-  output_file = "README.md",
-  params = NULL,
-  quiet = FALSE
-                 )
-```
-
 # Here is the code I need to contact API and extract some data from the pokeapi
 
 ## Universal Function
@@ -88,26 +77,25 @@ get_endpoints <- function(endpoint,choice){
   
   
              if(endpoint == "berry"){
-                 if(choice == 0){
+               if(choice == 0){
                     C <- lapply(tt$name,get_Berry,tt)
                        D<-do.call(rbind,C)
                        return(D)
                         }
-                      
-                 if(choice != 0){
+               if(choice != 0){
                     C <- lapply(tt$name[choice],get_Berry,tt)
                        D<-do.call(rbind,C)
                        return(D)
                }
-             }
-  
-                if(endpoint == "growth-rate"){
-                  if(choice == 0){
-                     C <- lapply(tt$name,get_growth_rate,tt)
-                       D<- do.call(rbind,C) 
-                       return(D)
-                }
-                if(choice != 0){
+             }  
+
+             if(endpoint == "growth-rate"){
+               if(choice == 0){
+                 C <- lapply(tt$name,get_growth_rate,tt)
+                 D<- do.call(rbind,C) 
+                 return(D)
+                 } 
+               if(choice != 0){
                    PokeMon1 <- get_growth_species(tt$name[choice],1,tt)
                 #for (i in 1:length(look_all$name)){
                     c = length(fromJSON(content(GET(tt$url[choice]),"text"),flatten = TRUE)$pokemon_species$name)
@@ -118,37 +106,34 @@ get_endpoints <- function(endpoint,choice){
                         }
                       }
                     }
-              }
-              if(endpoint == "berry-flavor"){
-                if(choice == 0){
-                     C <- lapply(tt$name,get_Berry_Flavors,tt)
-                       D<-do.call(rbind,C) 
-                               return(D) 
-                          }
-                        
+              }         
                   
-                 if(choice != 0){
+             if(endpoint == "berry-flavor"){
+                if(choice == 0){
+                    C <- lapply(tt$name,get_Berry_Flavors,tt)
+                    D<-do.call(rbind,C) 
+                    return(D) 
+                          }
+                if(choice != 0){
                     C <- lapply(tt$name[choice],get_Berry_Flavors,tt)
                     D<-do.call(rbind,C) 
                     return(D)
                }
-              }
-               
+             }
+  
              if(endpoint == "item"){
                if(choice == 0){
                  C <- lapply(tt$name,get_item,tt)
                  D<-do.call(rbind,C)
                  return(D)
-                 
                }
                if(choice != 0){
                  C <- lapply(tt$name[1:choice],get_item,tt)
                  D<-do.call(rbind,C)
                  return(D)
-                 
                }
              }
-            
+  
             if(endpoint == "move"){
               if(choice == 0){
                 C <- lapply(tt$name,get_moves,tt)
@@ -159,10 +144,8 @@ get_endpoints <- function(endpoint,choice){
                 C <- lapply(tt$name[1:choice],get_moves,tt)
                 D<-do.call(rbind,C)
                 return(D)
-              
               }
             }
-
 }
 ```
 
@@ -179,7 +162,8 @@ need to get berry names and its urls before we can use its function
 written by me. Codes are provided below.***
 
 Functions are:  
-1.`get_moves` 2.`get_growth_species`  
+1.`get_moves`  
+2.`get_growth_species`  
 3.`get_growth_rate`  
 4.`get_item`  
 5.`get_Berry_Flavors`  
@@ -222,9 +206,6 @@ get_moves <- function(s,tt) {
     short_effect <- Json_x$effect_entries$short_effect
     generation <- Json_x$generation$name
     
-#for (i in 1:length(Json_x$pokemon_species$url)){
-    
-    
     moves <- tibble(
     name = Name,
     power = Power ,
@@ -238,8 +219,6 @@ get_moves <- function(s,tt) {
     Generation = generation
   )
    return(moves)
-
-    
 }    
 
 #C <- lapply(tt$name[1:50],get_moves,tt)
@@ -584,6 +563,24 @@ Let’s look at this data set first
 
 ``` r
 get_endpoints("berry",0)
+```
+
+    ## # A tibble: 64 x 9
+    ##    Name   Growth_Time  Size Firmness   Max_Harvest Natural_Gift_Power Natrual_Gift_Type Soil_Dryness Smoothness
+    ##    <chr>        <int> <int> <chr>            <int>              <int> <chr>                    <int>      <int>
+    ##  1 cheri            3    20 soft                 5                 60 fire                        15         25
+    ##  2 chesto           3    80 super-hard           5                 60 water                       15         25
+    ##  3 pecha            3    40 very-soft            5                 60 electric                    15         25
+    ##  4 rawst            3    32 hard                 5                 60 grass                       15         25
+    ##  5 aspear           3    50 super-hard           5                 60 ice                         15         25
+    ##  6 leppa            4    28 very-hard            5                 60 fighting                    15         20
+    ##  7 oran             4    35 super-hard           5                 60 poison                      15         20
+    ##  8 persim           4    47 hard                 5                 60 ground                      15         20
+    ##  9 lum             12    34 super-hard           5                 60 flying                       8         20
+    ## 10 sitrus           8    95 very-hard            5                 60 psychic                      7         20
+    ## # ... with 54 more rows
+
+``` r
 df <- get_endpoints("berry",0)
 ```
 
@@ -621,6 +618,21 @@ Now the data set look like this:
 ``` r
 NewPoke
 ```
+
+    ## # A tibble: 64 x 13
+    ##    Name   Growth_Time  Size Firmness   Max_Harvest Natural_Gift_Power Natrual_Gift_Type Soil_Dryness Smoothness Growth_Rate_in_Hour Pokeblocks_Produc~ Growth_Rate_Cat~
+    ##    <chr>        <int> <int> <chr>            <int>              <int> <chr>                    <int>      <int>               <dbl>              <dbl> <chr>           
+    ##  1 cheri            3    20 soft                 5                 60 fire                        15         25                6.67               1.67 slow            
+    ##  2 chesto           3    80 super-hard           5                 60 water                       15         25               26.7                1.67 General         
+    ##  3 pecha            3    40 very-soft            5                 60 electric                    15         25               13.3                1.67 slow            
+    ##  4 rawst            3    32 hard                 5                 60 grass                       15         25               10.7                1.67 slow            
+    ##  5 aspear           3    50 super-hard           5                 60 ice                         15         25               16.7                1.67 slow            
+    ##  6 leppa            4    28 very-hard            5                 60 fighting                    15         20                7                  1.33 slow            
+    ##  7 oran             4    35 super-hard           5                 60 poison                      15         20                8.75               1.33 slow            
+    ##  8 persim           4    47 hard                 5                 60 ground                      15         20               11.8                1.33 slow            
+    ##  9 lum             12    34 super-hard           5                 60 flying                       8         20                2.83               2.5  Very Slow       
+    ## 10 sitrus           8    95 very-hard            5                 60 psychic                      7         20               11.9                2.86 slow            
+    ## # ... with 54 more rows, and 1 more variable: Size_Category <chr>
 
 Now We create some tables using the new data set. NewPoke!
 
@@ -689,13 +701,41 @@ and pokeblock productivity. this is an interesting find.
 ``` r
 W <-NewPoke %>% group_by(Size_Category) %>% summarise(IQR_growth_rate = IQR(Growth_Rate_in_Hour), Size_mean = mean(Size), pokeblock_productivity_mean = mean(Pokeblocks_Productivity))
 W
+```
 
+    ## # A tibble: 3 x 4
+    ##   Size_Category IQR_growth_rate Size_mean pokeblock_productivity_mean
+    ##   <chr>                   <dbl>     <dbl>                       <dbl>
+    ## 1 Big                     12.3      186.                         4.52
+    ## 2 Medium                  17.5       78.1                        4.63
+    ## 3 Small                    5.29      34.4                        4.58
+
+``` r
 W2<-NewPoke %>% group_by(Firmness) %>% summarise(median_growrate = median(Growth_Rate_in_Hour), Size_mean = mean(Size), pokeblock_productivity_mean = mean(Pokeblocks_Productivity))
 W2
+```
 
+    ## # A tibble: 5 x 4
+    ##   Firmness   median_growrate Size_mean pokeblock_productivity_mean
+    ##   <chr>                <dbl>     <dbl>                       <dbl>
+    ## 1 hard                 13.8       119.                        3.72
+    ## 2 soft                  8.77      120.                        4.76
+    ## 3 super-hard           12.0       120.                        4.25
+    ## 4 very-hard             9.88      122.                        5.26
+    ## 5 very-soft             7.83      124.                        5.19
+
+``` r
 W3 <- NewPoke %>% group_by(Growth_Rate_Category) %>% summarise(mean_growrate = mean(Growth_Rate_in_Hour), Size_mean = mean(Size), pokeblock_productivity_mean = mean(Pokeblocks_Productivity))
 W3
 ```
+
+    ## # A tibble: 4 x 4
+    ##   Growth_Rate_Category mean_growrate Size_mean pokeblock_productivity_mean
+    ##   <chr>                        <dbl>     <dbl>                       <dbl>
+    ## 1 Fast                         49.2      163.                         1.44
+    ## 2 General                      27.0      145.                         2.45
+    ## 3 slow                         11.8      142.                         4.29
+    ## 4 Very Slow                     2.52      52.3                        7.34
 
 ### Finally, we create some simple graphs to visualize the data NewPoke
 
@@ -713,7 +753,7 @@ g<-ggplot(NewPoke,aes(x = Firmness))
     scale_fill_discrete(name = "Size Category") 
 ```
 
-![](README_files/figure-gfm/unnamed-chunk-20-1.png)<!-- -->
+![](README_files/figure-gfm/unnamed-chunk-18-1.png)<!-- -->
 
 This is the graph exploring the count of firmness and size. This is a
 scatter plot. And most of the berries are within the size 200.
@@ -727,7 +767,7 @@ g<-ggplot(NewPoke,
     labs(x = "Firmness", y = "Size",title = "Size VS Firmness") 
 ```
 
-![](README_files/figure-gfm/unnamed-chunk-21-1.png)<!-- --> this is the
+![](README_files/figure-gfm/unnamed-chunk-19-1.png)<!-- --> this is the
 graph that create histogram of size categorized by growth\_rate this
 result is basically the same as the scatter plot above
 
@@ -738,7 +778,7 @@ g<-ggplot(NewPoke,aes(x = Size ,color = Growth_Rate_Category))
     labs(x = "Size", y = "count",title = "Size of Berries with GrowthRate") 
 ```
 
-![](README_files/figure-gfm/unnamed-chunk-22-1.png)<!-- -->
+![](README_files/figure-gfm/unnamed-chunk-20-1.png)<!-- -->
 
 This is the graph creating the barplots that associate with Size and
 grow\_rate  
@@ -758,7 +798,7 @@ g<-ggplot(NewPoke,
     labs(title = "Size Categorized by Growth Rate Paneled by Firmness ")
 ```
 
-![](README_files/figure-gfm/unnamed-chunk-23-1.png)<!-- -->
+![](README_files/figure-gfm/unnamed-chunk-21-1.png)<!-- -->
 
 This is the boxplot paneled by growth\_rate, and size within each
 category of growth\_rate. The growth-rate fast/general/slow share the
@@ -777,7 +817,7 @@ same size mean. There are a few berry growing fast.
     scale_color_discrete(name = "y")
 ```
 
-![](README_files/figure-gfm/unnamed-chunk-24-1.png)<!-- -->
+![](README_files/figure-gfm/unnamed-chunk-22-1.png)<!-- -->
 
 This is the scatter plot of size and growth\_rate\_in\_hour(they should
 have high correlation since growth\_rate in hour is generated by size)  
@@ -799,7 +839,7 @@ Several Outliers in this plot
     scale_shape_discrete(name = "Size_Category")
 ```
 
-![](README_files/figure-gfm/unnamed-chunk-25-1.png)<!-- --> This is
+![](README_files/figure-gfm/unnamed-chunk-23-1.png)<!-- --> This is
 another way to visualize the Size vs Growth Rate in hour  
 This plot maybe more easy to visualize. There is basically a linear
 relationship between size and its growth-rate in hour.
@@ -820,7 +860,7 @@ relationship between size and its growth-rate in hour.
     scale_shape_discrete(name="Firmness")
 ```
 
-![](README_files/figure-gfm/unnamed-chunk-26-1.png)<!-- -->
+![](README_files/figure-gfm/unnamed-chunk-24-1.png)<!-- -->
 
 ``` r
 type_effectiveness <- function(type, strength="all", direction="all"){
