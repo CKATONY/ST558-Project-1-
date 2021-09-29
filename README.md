@@ -14,8 +14,8 @@ Pokémon is childhood memory for lots of people.
 
 I used to play Pokémon on Game Boy Advance SP
 
+![](README_files/figure-gfm/unnamed-chunk-4-1.png)<!-- -->
 ![](README_files/figure-gfm/unnamed-chunk-5-1.png)<!-- -->
-![](README_files/figure-gfm/unnamed-chunk-6-1.png)<!-- -->
 
 # The packages in R that are needed in this project
 
@@ -758,7 +758,7 @@ g<-ggplot(NewPoke,aes(x = Firmness))
     scale_fill_discrete(name = "Size Category") 
 ```
 
-![](README_files/figure-gfm/unnamed-chunk-22-1.png)<!-- -->
+![](README_files/figure-gfm/unnamed-chunk-21-1.png)<!-- -->
 
 #### Graph 2
 
@@ -774,7 +774,7 @@ g<-ggplot(NewPoke,
     labs(x = "Firmness", y = "Size",title = "Size VS Firmness") 
 ```
 
-![](README_files/figure-gfm/unnamed-chunk-23-1.png)<!-- -->
+![](README_files/figure-gfm/unnamed-chunk-22-1.png)<!-- -->
 
 #### Graph 3
 
@@ -789,7 +789,7 @@ g<-ggplot(NewPoke,aes(x = Size ,color = Growth_Rate_Category))
     labs(x = "Size", y = "count",title = "Size of Berries with GrowthRate") 
 ```
 
-![](README_files/figure-gfm/unnamed-chunk-24-1.png)<!-- -->
+![](README_files/figure-gfm/unnamed-chunk-23-1.png)<!-- -->
 
 #### Graph4
 
@@ -811,7 +811,7 @@ g<-ggplot(NewPoke,
     labs(title = "Size Categorized by Growth Rate Paneled by Firmness ")
 ```
 
-![](README_files/figure-gfm/unnamed-chunk-25-1.png)<!-- -->
+![](README_files/figure-gfm/unnamed-chunk-24-1.png)<!-- -->
 
 #### Graph5
 
@@ -833,7 +833,7 @@ few berry growing fast.
     scale_color_discrete(name = "y")
 ```
 
-![](README_files/figure-gfm/unnamed-chunk-26-1.png)<!-- -->
+![](README_files/figure-gfm/unnamed-chunk-25-1.png)<!-- -->
 
 #### Graph6
 
@@ -857,7 +857,7 @@ Several Outliers in this plot
     scale_shape_discrete(name = "Size_Category")
 ```
 
-![](README_files/figure-gfm/unnamed-chunk-27-1.png)<!-- -->
+![](README_files/figure-gfm/unnamed-chunk-26-1.png)<!-- -->
 
 #### Graph7
 
@@ -881,7 +881,7 @@ relationship between size and its growth-rate in hour.
     scale_shape_discrete(name="Firmness")
 ```
 
-![](README_files/figure-gfm/unnamed-chunk-28-1.png)<!-- -->
+![](README_files/figure-gfm/unnamed-chunk-27-1.png)<!-- -->
 
 # To Wrap Up
 

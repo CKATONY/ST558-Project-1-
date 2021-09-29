@@ -21,7 +21,7 @@ picture1 <- load.image('/Users/CKA/Desktop/Master 2021 Fall/ST558 data science f
 plot(picture1,axes=0)
 ```
 ```{r, echo = FALSE}
-picture2 <- load.image('/Users/CKA/Desktop/Master 2021 Fall/ST558 data science for statistician/pikachu.png')
+picture2 <- load.image('/Users/CKA/Desktop/Master 2021 Fall/ST558 data science for statistician/pika.jpg')
 plot(picture2,axes=0)
 ```
 
