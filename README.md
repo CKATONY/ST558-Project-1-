@@ -11,9 +11,19 @@ Exploratory Data Analysis.**
 API that is using in this project can be access
 [‘here’](https://pokeapi.co/)  
 Pokémon is childhood memory for lots of people.  
-I used to play Pokémon on Game Boy Advance SP  
-<img src="/Users/CKA/Desktop/Master 2021 Fall/ST558 data science for statistician/SP.jpg" style="display: block; margin: auto;" />
-<img src="/Users/CKA/Desktop/Master 2021 Fall/ST558 data science for statistician/pikachu.png" style="display: block; margin: auto;" />
+I used to play Pokémon on Game Boy Advance SP
+
+``` r
+knitr::include_graphics('/Users/CKA/Desktop/Master 2021 Fall/ST558 data science for statistician/SP.jpg')
+```
+
+![](/Users/CKA/Desktop/Master%202021%20Fall/ST558%20data%20science%20for%20statistician/SP.jpg)<!-- -->
+
+``` r
+knitr::include_graphics('/Users/CKA/Desktop/Master 2021 Fall/ST558 data science for statistician/pikachu.png')
+```
+
+![](/Users/CKA/Desktop/Master%202021%20Fall/ST558%20data%20science%20for%20statistician/pikachu.png)<!-- -->
 
 # The packages in R that are needed in this project
 
@@ -620,19 +630,19 @@ NewPoke
 ```
 
     ## # A tibble: 64 x 13
-    ##    Name   Growth_Time  Size Firmness   Max_Harvest Natural_Gift_Power Natrual_Gift_Type Soil_Dryness Smoothness Growth_Rate_in_Hour Pokeblocks_Produc~ Growth_Rate_Cat~
-    ##    <chr>        <int> <int> <chr>            <int>              <int> <chr>                    <int>      <int>               <dbl>              <dbl> <chr>           
-    ##  1 cheri            3    20 soft                 5                 60 fire                        15         25                6.67               1.67 slow            
-    ##  2 chesto           3    80 super-hard           5                 60 water                       15         25               26.7                1.67 General         
-    ##  3 pecha            3    40 very-soft            5                 60 electric                    15         25               13.3                1.67 slow            
-    ##  4 rawst            3    32 hard                 5                 60 grass                       15         25               10.7                1.67 slow            
-    ##  5 aspear           3    50 super-hard           5                 60 ice                         15         25               16.7                1.67 slow            
-    ##  6 leppa            4    28 very-hard            5                 60 fighting                    15         20                7                  1.33 slow            
-    ##  7 oran             4    35 super-hard           5                 60 poison                      15         20                8.75               1.33 slow            
-    ##  8 persim           4    47 hard                 5                 60 ground                      15         20               11.8                1.33 slow            
-    ##  9 lum             12    34 super-hard           5                 60 flying                       8         20                2.83               2.5  Very Slow       
-    ## 10 sitrus           8    95 very-hard            5                 60 psychic                      7         20               11.9                2.86 slow            
-    ## # ... with 54 more rows, and 1 more variable: Size_Category <chr>
+    ##    Name   Growth_Time  Size Firmness   Max_Harvest Natural_Gift_Power Natrual_Gift_Type Soil_Dryness Smoothness Growth_Rate_in_H~
+    ##    <chr>        <int> <int> <chr>            <int>              <int> <chr>                    <int>      <int>             <dbl>
+    ##  1 cheri            3    20 soft                 5                 60 fire                        15         25              6.67
+    ##  2 chesto           3    80 super-hard           5                 60 water                       15         25             26.7 
+    ##  3 pecha            3    40 very-soft            5                 60 electric                    15         25             13.3 
+    ##  4 rawst            3    32 hard                 5                 60 grass                       15         25             10.7 
+    ##  5 aspear           3    50 super-hard           5                 60 ice                         15         25             16.7 
+    ##  6 leppa            4    28 very-hard            5                 60 fighting                    15         20              7   
+    ##  7 oran             4    35 super-hard           5                 60 poison                      15         20              8.75
+    ##  8 persim           4    47 hard                 5                 60 ground                      15         20             11.8 
+    ##  9 lum             12    34 super-hard           5                 60 flying                       8         20              2.83
+    ## 10 sitrus           8    95 very-hard            5                 60 psychic                      7         20             11.9 
+    ## # ... with 54 more rows, and 3 more variables: Pokeblocks_Productivity <dbl>, Growth_Rate_Category <chr>, Size_Category <chr>
 
 Now We create some tables using the new data set. NewPoke!
 
@@ -739,6 +749,8 @@ W3
 
 ### Finally, we create some simple graphs to visualize the data NewPoke
 
+#### Graph 1
+
 This is the graph exploring the count of berry that is categorized by
 firmness and size within each type of firmness.  
 Almost half of the big berries are hard and soft. While most of the
@@ -755,8 +767,10 @@ g<-ggplot(NewPoke,aes(x = Firmness))
 
 ![](README_files/figure-gfm/unnamed-chunk-18-1.png)<!-- -->
 
-This is the graph exploring the count of firmness and size. This is a
-scatter plot. And most of the berries are within the size 200.
+#### Graph 2
+
+This is the graph exploring the count of firmness and size.(Graph 1)  
+This is a scatter plot. And most of the berries are within the size 200.
 
 ``` r
 g<-ggplot(NewPoke,
@@ -767,9 +781,13 @@ g<-ggplot(NewPoke,
     labs(x = "Firmness", y = "Size",title = "Size VS Firmness") 
 ```
 
-![](README_files/figure-gfm/unnamed-chunk-19-1.png)<!-- --> this is the
-graph that create histogram of size categorized by growth\_rate this
-result is basically the same as the scatter plot above
+![](README_files/figure-gfm/unnamed-chunk-19-1.png)<!-- -->
+
+#### Graph 3
+
+This is the graph that create histogram of size categorized by
+growth\_rate  
+This result is basically the same as the scatter plot above
 
 ``` r
 g<-ggplot(NewPoke,aes(x = Size ,color = Growth_Rate_Category))
@@ -779,6 +797,8 @@ g<-ggplot(NewPoke,aes(x = Size ,color = Growth_Rate_Category))
 ```
 
 ![](README_files/figure-gfm/unnamed-chunk-20-1.png)<!-- -->
+
+#### Graph4
 
 This is the graph creating the barplots that associate with Size and
 grow\_rate  
@@ -800,9 +820,12 @@ g<-ggplot(NewPoke,
 
 ![](README_files/figure-gfm/unnamed-chunk-21-1.png)<!-- -->
 
+#### Graph5
+
 This is the boxplot paneled by growth\_rate, and size within each
-category of growth\_rate. The growth-rate fast/general/slow share the
-same size mean. There are a few berry growing fast.
+category of growth\_rate.  
+The growth-rate fast/general/slow share the same size mean. There are a
+few berry growing fast.
 
 ``` r
  g<-ggplot(NewPoke,aes(x = Growth_Rate_Category,
@@ -818,6 +841,8 @@ same size mean. There are a few berry growing fast.
 ```
 
 ![](README_files/figure-gfm/unnamed-chunk-22-1.png)<!-- -->
+
+#### Graph6
 
 This is the scatter plot of size and growth\_rate\_in\_hour(they should
 have high correlation since growth\_rate in hour is generated by size)  
@@ -839,8 +864,11 @@ Several Outliers in this plot
     scale_shape_discrete(name = "Size_Category")
 ```
 
-![](README_files/figure-gfm/unnamed-chunk-23-1.png)<!-- --> This is
-another way to visualize the Size vs Growth Rate in hour  
+![](README_files/figure-gfm/unnamed-chunk-23-1.png)<!-- -->
+
+#### Graph7
+
+This is another way to visualize Graph 6  
 This plot maybe more easy to visualize. There is basically a linear
 relationship between size and its growth-rate in hour.
 
@@ -862,135 +890,13 @@ relationship between size and its growth-rate in hour.
 
 ![](README_files/figure-gfm/unnamed-chunk-24-1.png)<!-- -->
 
-``` r
-type_effectiveness <- function(type, strength="all", direction="all"){
+# To Wrap Up
 
-  query <- "type/?limit=20"
-  request = glue::glue("http://pokeapi.co/api/v2/{query}")
-  r <- httr::GET(request)
-
-  types <- c()
-
-  for (i in c(1:20)) {
-    types <- c(types, httr::content(r,"parsed")$results[[i]]$name)
-  }
-
-  strengths <- c("strong", "weak", "all")
-  directions <- c("to", "against", "all")
-
-  if (type %in% types){
-    if (strength %in% strengths){
-      if (direction %in% directions){
-
-        type_id = match(type, types)
-        query <- paste("type/", type_id, "/", sep="")
-        request = glue::glue("http://pokeapi.co/api/v2/{query}")
-        r <- httr::GET(request)
-
-        st <- c()
-        wt <-  c()
-        sa <- c()
-        wa <- c()
-
-        for (j in c(1:20)){
-
-          tryCatch({
-            st <- c(st, httr::content(r,"parsed")$damage_relations$half_damage_from[[j]]$name)
-          }, error=function(e) NA)
-
-          tryCatch({
-            wt <- c(wt, httr::content(r,"parsed")$damage_relations$double_damage_from[[j]]$name)
-          }, error=function(e) NA)
-
-          tryCatch({
-            sa <- c(sa, httr::content(r,"parsed")$damage_relations$double_damage_to[[j]]$name)
-          }, error=function(e) NA)
-
-          tryCatch({
-            wa <- c(wa, httr::content(r,"parsed")$damage_relations$half_damage_to[[j]]$name)
-          }, error=function(e) NA)
-
-        }
-
-        df_st <- data.frame(st)
-        df_wt <- data.frame(wt)
-        df_sa <- data.frame(sa)
-        df_wa <- data.frame(wa)
-
-        names(df_st) <- c("Strong To")
-        names(df_wt) <- c("Weak To")
-        names(df_sa) <- c("Strong Against")
-        names(df_wa) <- c("Weak Against")
-
-        if (direction == "to"){
-          if (strength == "strong"){
-            return(df_st)
-          }
-          if (strength == "weak"){
-            return(df_wt)
-          }
-          if (strength == "all"){
-            return(list(df_st, df_wt))
-          }
-        }
-
-        if (direction == "against"){
-          if (strength == "strong"){
-            return(df_sa)
-          }
-          if (strength == "weak"){
-            return(df_wa)
-          }
-          if (strength == "all"){
-            return(list(df_sa, df_wa))
-          }
-        }
-
-        if (direction == "all"){
-          if (strength == "strong"){
-            return(list(df_st, df_sa))
-          }
-          if (strength == "weak"){
-            return(list(df_wt, df_wa))
-          }
-          if (strength == "all"){
-            return(list(df_st, df_wt, df_sa, df_wa))
-          }
-        }
-      }
-      else{
-        return(FALSE)
-      }
-    }
-    else{
-      return(FALSE)
-    }
-  }
-  else{
-    return(FALSE)
-  }
-}
-
-
-get_region <- function(colour) {
-
-  resp <- httr::GET(paste0("http://pokeapi.co/api/v2/version/", colour))
-  con <- httr::content(resp)
-
-  if (resp$status_code == 404) {
-      cols <- pokedex::get_types(type = "version")
-      stop("Colour not found. Make sure it is one of: ", paste0(cols, collpase =", "))
-  }
-
-  r <- con$version_group$url %>%
-    httr::GET() %>%
-    httr::content()
-
-  out <- tibble::tibble(
-    game = colour,
-    region = ifelse(is_empty(r$region), NA, r$regions[[1]]$name),
-    generation = r$generation$name
-  )
-  return(out)
-}
-```
+This Berry Data is kind of easy to visualize, there are not so many
+observations in the data set.  
+The berry data is here because of its simplicity, I did look at other
+datasets such as pokemon species/items/moves that I get from the
+universal function. Those are more complicated and undtructured data
+sets.  
+Anyway, doing this is a lot of fun. And there are some places definitely
+need to be polished, such as coding part.
