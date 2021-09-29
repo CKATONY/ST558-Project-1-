@@ -14,30 +14,29 @@ Pokémon is childhood memory for lots of people.
 
 I used to play Pokémon on Game Boy Advance SP
 
-![](README_files/figure-gfm/unnamed-chunk-4-1.png)<!-- -->
-![](README_files/figure-gfm/unnamed-chunk-5-1.png)<!-- -->
+![](README_files/figure-gfm/unnamed-chunk-1-1.png)<!-- -->
+![](README_files/figure-gfm/unnamed-chunk-2-1.png)<!-- -->
 
 # The packages in R that are needed in this project
 
-    *knitr
-    *httr
-    *jsonlite
-    *tibble 
-    *tidyverse
-    *dplyr 
-    *rmarkdown
-    *imager
+    *[`knitr`](https://www.rdocumentation.org/packages/knitr/versions/1.30)
+    *[`httr`](https://httr.r-lib.org/)
+    *[`jsonlite`](https://cran.r-project.org/web/packages/jsonlite/vignettes/json-aaquickstart.html)
+    *[`tidyverse`](https://www.tidyverse.org/)
+    *[`rmarkdown`](https://www.rdocumentation.org/packages/rmarkdown/versions/1.7)
+    *[`imager`](https://www.rdocumentation.org/packages/imager/versions/0.41.2)
 
 # Here is the code I need to contact API and extract some data from the pokeapi
 
 ## Universal Function
 
-**This is the function that input the endpoints, as well as the choices
+**This is the function that inputs the endpoints, as well as the choices
 you can specify with those endpoints**  
-*note:please read in the functions listed below before read in this
-universal function* *note:all choices you can look up is the output
-**tt** under sections which is specified and described in each
-function*  
+*note:please read in all other functions listed in the **functions**
+section before using this universal function* *note:all choices you can
+look up generated from output **tt** under sections which is specified
+and described in each function*
+
 Input endpoint includes:
 
 *berry  
@@ -53,7 +52,7 @@ Choices can be 0 or other numeric values.
 **1.For example, the endpoint berry contains 64 choices, that is, 64
 types of berry.**  
 **2.For the berry data, if the choice is 0, it returns all the berries
-and most of their attributes.**  
+and their attributes.**  
 **3.For the growth-rate data, if the choice is 0, it will returns the
 growth rate, corresponding formula as well as the levels with
 corresponding experience needed. In this case, all pokemon species share
@@ -65,10 +64,13 @@ species that are categorized as slow growth-rate. etc….**
 **5.The total number of categories for the berry flavor is 5.**  
 **6.The total number of categories for the growth rate is 6. if you
 enter the number of choice greater than 6, it will return error, same
-rule applies to the endpoint berry**  
+rule applies to the other endpoint**  
 **7.For the endpoint item/move, if the choice is 0, it will return all
 the items/moves and its attribute, if the choice is not zero, it will
-return up to numbers of item/move you want to get up to your choice.**
+return up to numbers of item/move you want to get up to your choice.**  
+**8.Recommendation: for the item and move endpoint, the time to get all
+the moves or items may take longer time. You can specify the choice to
+be **100** or **200****
 
 ``` r
 get_endpoints <- function(endpoint,choice){
@@ -236,7 +238,7 @@ one endpoints but some of the returned variables we can get are also
 endpoints. We access the pokemon-species(endpoint) inside the growth
 rate endpoint.**
 
-tt is the dataframe containing all the names of growth-rate and urls  
+tt is the data frame containing all the names of growth-rate and urls  
 this function take input  
 s = one of the growth rate category (can see it in tt) (quote s for the
 input)  
@@ -351,7 +353,7 @@ get_growth_rate <- function(s,tt) {
   )
    return(df)
 }
-
+#fast way to get full dataset 
 #C <- lapply(tt$name,get_growth_rate,tt)
 #D<- do.call(rbind,C) 
 
@@ -436,17 +438,17 @@ as well as some attributes of flavors.**
 tt is the dataframe containing all the names of berry-flavor and urls  
 This function takes input:  
 s = each type of flavor (can see it in tt) (quote s for the input)  
-tt= the data set obtained in the code above the function
+tt = the data set obtained in the code above the function
 
 ``` r
 # after getting the data set of berry containing the name and its url links, writing the function that call the attributes of each type of berry
-  # caution: this function only return the single berry that you are interesed. 
+  # caution: this function only return the single berry that you are interested. 
   
 # this function return the  berries names that share same type of flavor, as well as some attributes of flavors.   
- # E <- GET("https://pokeapi.co/api/v2/berry-flavor/")
+# E <- GET("https://pokeapi.co/api/v2/berry-flavor/")
 #  getdata_text <- content(E,"text")
- # getdata_json<- fromJSON(getdata_text, flatten = TRUE)
- # tt <- as_tibble(getdata_json$results)
+# getdata_json<- fromJSON(getdata_text, flatten = TRUE)
+# tt <- as_tibble(getdata_json$results)
    
   get_Berry_Flavors <- function(s,tt){
    url <- tt$url[which(tt$name==s)]
@@ -531,6 +533,8 @@ tt= the data set obtained in the code above the function
 #for (i in 2:length(tt$name)){
 #    df <- do.call(rbind, list(getBerry(tt$name[i],tt)))
 #}
+
+#this is a faster way
 # C <- lapply(tt$name,getBerry,tt)
 #do.call(rbind,C) 
 ```
@@ -758,7 +762,7 @@ g<-ggplot(NewPoke,aes(x = Firmness))
     scale_fill_discrete(name = "Size Category") 
 ```
 
-![](README_files/figure-gfm/unnamed-chunk-21-1.png)<!-- -->
+![](README_files/figure-gfm/unnamed-chunk-18-1.png)<!-- -->
 
 #### Graph 2
 
@@ -774,7 +778,7 @@ g<-ggplot(NewPoke,
     labs(x = "Firmness", y = "Size",title = "Size VS Firmness") 
 ```
 
-![](README_files/figure-gfm/unnamed-chunk-22-1.png)<!-- -->
+![](README_files/figure-gfm/unnamed-chunk-19-1.png)<!-- -->
 
 #### Graph 3
 
@@ -789,7 +793,7 @@ g<-ggplot(NewPoke,aes(x = Size ,color = Growth_Rate_Category))
     labs(x = "Size", y = "count",title = "Size of Berries with GrowthRate") 
 ```
 
-![](README_files/figure-gfm/unnamed-chunk-23-1.png)<!-- -->
+![](README_files/figure-gfm/unnamed-chunk-20-1.png)<!-- -->
 
 #### Graph4
 
@@ -811,7 +815,7 @@ g<-ggplot(NewPoke,
     labs(title = "Size Categorized by Growth Rate Paneled by Firmness ")
 ```
 
-![](README_files/figure-gfm/unnamed-chunk-24-1.png)<!-- -->
+![](README_files/figure-gfm/unnamed-chunk-21-1.png)<!-- -->
 
 #### Graph5
 
@@ -833,7 +837,7 @@ few berry growing fast.
     scale_color_discrete(name = "y")
 ```
 
-![](README_files/figure-gfm/unnamed-chunk-25-1.png)<!-- -->
+![](README_files/figure-gfm/unnamed-chunk-22-1.png)<!-- -->
 
 #### Graph6
 
@@ -857,7 +861,7 @@ Several Outliers in this plot
     scale_shape_discrete(name = "Size_Category")
 ```
 
-![](README_files/figure-gfm/unnamed-chunk-26-1.png)<!-- -->
+![](README_files/figure-gfm/unnamed-chunk-23-1.png)<!-- -->
 
 #### Graph7
 
@@ -881,7 +885,7 @@ relationship between size and its growth-rate in hour.
     scale_shape_discrete(name="Firmness")
 ```
 
-![](README_files/figure-gfm/unnamed-chunk-27-1.png)<!-- -->
+![](README_files/figure-gfm/unnamed-chunk-24-1.png)<!-- -->
 
 # To Wrap Up
 
@@ -892,4 +896,6 @@ datasets such as pokemon species/items/moves that I get from the
 universal function. Those are more complicated and undtructured data
 sets.  
 Anyway, doing this is a lot of fun. And there are some places definitely
-need to be polished, such as coding part.
+need to be polished.  
+For example, I need to find another way to speed up the time to get full
+item/move/pokemon species data…

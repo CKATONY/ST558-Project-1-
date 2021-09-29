@@ -33,25 +33,22 @@ plot(picture2,axes=0)
 
 
 # The packages in R that are needed in this project 
-    *knitr
-    *httr
-    *jsonlite
-    *tibble 
-    *tidyverse
-    *dplyr 
-    *rmarkdown
-    *imager
+    *[`knitr`](https://www.rdocumentation.org/packages/knitr/versions/1.30)
+    *[`httr`](https://httr.r-lib.org/)
+    *[`jsonlite`](https://cran.r-project.org/web/packages/jsonlite/vignettes/json-aaquickstart.html)
+    *[`tidyverse`](https://www.tidyverse.org/)
+    *[`rmarkdown`](https://www.rdocumentation.org/packages/rmarkdown/versions/1.7)
+    *[`imager`](https://www.rdocumentation.org/packages/imager/versions/0.41.2)
 
 # Here is the code I need to contact API and extract some data from the pokeapi 
 
 
-
-
 ## Universal Function 
 
-__This is the function that input the endpoints, as well as the choices you can specify with those endpoints__  
-*note:please read in the functions listed below before read in this universal function* 
-*note:all choices you can look up is the output __tt__ under sections which is specified and described in each function*  
+__This is the function that inputs the endpoints, as well as the choices you can specify with those endpoints__  
+*note:please read in all other functions listed in the __functions__ section before using this universal function* 
+*note:all choices you can look up generated from output __tt__ under sections which is specified and described in each function*  
+
 Input endpoint includes:  
   
 *berry  
@@ -65,18 +62,18 @@ Choices can be 0 or other numeric values.
 __How to use this universal function:__
 
 **1.For example, the endpoint berry contains 64 choices, that is, 64 types of berry.**  
-**2.For the berry data, if the choice is 0, it returns all the berries and most of their attributes.**  
+**2.For the berry data, if the choice is 0, it returns all the berries and their attributes.**  
 **3.For the growth-rate data, if the choice is 0, it will returns the growth rate, corresponding formula as well as the levels with corresponding experience needed. In this case, all pokemon species share same experience points needed to have each level up.**  
- **4.If the choice is not 0 for the growth-rate endpoint, it will return the pokemon species which are under the category of growth-rate, for example, if we input choice = 1, it will return the all the pokemon species that are categorized as slow growth-rate. etc....**  
+**4.If the choice is not 0 for the growth-rate endpoint, it will return the pokemon species which are under the category of growth-rate, for example, if we input choice = 1, it will return the all the pokemon species that are categorized as slow growth-rate. etc....**  
 **5.The total number of categories for the berry flavor is 5.**  
-**6.The total number of categories for the growth rate is 6. if you enter the number of choice greater than 6, it will return error, same rule applies to the endpoint berry**  
+**6.The total number of categories for the growth rate is 6. if you enter the number of choice greater than 6, it will return error, same rule applies to the other endpoint**  
 **7.For the endpoint item/move, if the choice is 0, it will return all the items/moves and its attribute, if the choice is not zero, it will return up to numbers of item/move you want to get up to your choice.**  
+**8.Recommendation: for the item and move endpoint, the time to get all the moves or items may take longer time. You can specify the choice to be __100__ or __200__** 
 
 ```{r, echo = FALSE}
 
 library(httr)
 library(jsonlite)
-library(dplyr)
 library(tidyverse)
 library(rmarkdown)
 library(imager)
@@ -245,7 +242,7 @@ get_moves <- function(s,tt) {
 ### 2.`get_growth_species` 
 __This function get species, while access the several endpoints, the pokeapi is built with endpoints with endpoints, that is, growth-rate is one endpoints but some of the returned variables we can get are also endpoints. We access the pokemon-species(endpoint) inside the growth rate endpoint.__  
 
-tt is the dataframe containing all the names of growth-rate and urls  
+tt is the data frame containing all the names of growth-rate and urls  
 this function take input  
   s = one of the growth rate category  (can see it in tt) (quote s for the input)  
   i = the target species within the growth rate.  
@@ -359,7 +356,7 @@ get_growth_rate <- function(s,tt) {
   )
    return(df)
 }
-
+#fast way to get full dataset 
 #C <- lapply(tt$name,get_growth_rate,tt)
 #D<- do.call(rbind,C) 
 
@@ -449,17 +446,17 @@ __This function return the  berries names that share same type of flavor, as wel
 tt is the dataframe containing all the names of berry-flavor and urls  
 This function takes input:  
   s = each type of flavor (can see it in tt) (quote s for the input)  
-  tt= the data set obtained in the code above the function  
+  tt = the data set obtained in the code above the function  
 ```{r}
 
 # after getting the data set of berry containing the name and its url links, writing the function that call the attributes of each type of berry
-  # caution: this function only return the single berry that you are interesed. 
+  # caution: this function only return the single berry that you are interested. 
   
 # this function return the  berries names that share same type of flavor, as well as some attributes of flavors.   
- # E <- GET("https://pokeapi.co/api/v2/berry-flavor/")
+# E <- GET("https://pokeapi.co/api/v2/berry-flavor/")
 #  getdata_text <- content(E,"text")
- # getdata_json<- fromJSON(getdata_text, flatten = TRUE)
- # tt <- as_tibble(getdata_json$results)
+# getdata_json<- fromJSON(getdata_text, flatten = TRUE)
+# tt <- as_tibble(getdata_json$results)
    
   get_Berry_Flavors <- function(s,tt){
    url <- tt$url[which(tt$name==s)]
@@ -550,6 +547,8 @@ tt= the data set obtained in the code above the function
 #for (i in 2:length(tt$name)){
 #    df <- do.call(rbind, list(getBerry(tt$name[i],tt)))
 #}
+
+#this is a faster way
 # C <- lapply(tt$name,getBerry,tt)
 #do.call(rbind,C) 
 
@@ -608,6 +607,7 @@ m<-ifelse(NewPoke$Size >= 100, "Big",
 NewPoke$Growth_Rate_Category <- v
 NewPoke$Size_Category <- m
 ```
+
 Now the data set look like this:
 
 ```{r, echo=TRUE, eval=TRUE}
@@ -771,7 +771,9 @@ This plot maybe more easy to visualize. There is basically a linear relationship
 
 This Berry Data is kind of easy to visualize, there are not so many observations in the data set.  
 The berry data is here because of its simplicity, I did look at other datasets such as pokemon species/items/moves that I get from the universal function. Those are more complicated and undtructured data sets.  
-Anyway, doing this is a lot of fun. And there are  some places definitely need to be polished, such as coding part.  
+Anyway, doing this is a lot of fun. And there are  some places definitely need to be polished.  
+For example, I need to find another way to speed up the time to get full item/move/pokemon species data...  
+
 
 
 
