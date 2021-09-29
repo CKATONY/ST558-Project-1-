@@ -15,10 +15,10 @@ knitr::opts_chunk$set(echo = TRUE, warning= FALSE, message=FALSE)
 
 ```
 
-```{r}
+```{r,include = FALSE, eval = TRUE}
 knitr::include_graphics('/Users/CKA/Desktop/Master 2021 Fall/ST558 data science for statistician/SP.jpg')
 ```
-```{r}
+```{r, include = FALSE, eval = TRUE}
 knitr::include_graphics('/Users/CKA/Desktop/Master 2021 Fall/ST558 data science for statistician/pikachu.png')
 ```
 
