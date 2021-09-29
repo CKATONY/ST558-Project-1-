@@ -8,18 +8,21 @@ date: "9/18/2021"
 __This Project aims to accessing data from API, and make some Exploratory Data Analysis.__ 
 
 API that is using in this project can be access ['here'](https://pokeapi.co/)  
-Pokémon is childhood memory for lots of people.  
+Pokémon is childhood memory for lots of people.
+
 I used to play Pokémon on Game Boy Advance SP  
 ```{r setup, include = FALSE}
 knitr::opts_chunk$set(echo = TRUE, warning= FALSE, message=FALSE)
 
 ```
 
-```{r,include = FALSE, eval = TRUE}
-knitr::include_graphics('/Users/CKA/Desktop/Master 2021 Fall/ST558 data science for statistician/SP.jpg')
+```{r,echo = FALSE}
+picture1 <- load.image('/Users/CKA/Desktop/Master 2021 Fall/ST558 data science for statistician/sp.jpg')
+plot(picture1,axes=0)
 ```
-```{r, include = FALSE, eval = TRUE}
-knitr::include_graphics('/Users/CKA/Desktop/Master 2021 Fall/ST558 data science for statistician/pikachu.png')
+```{r, echo = FALSE}
+picture2 <- load.image('/Users/CKA/Desktop/Master 2021 Fall/ST558 data science for statistician/pikachu.png')
+plot(picture2,axes=0)
 ```
 
 
@@ -37,6 +40,7 @@ knitr::include_graphics('/Users/CKA/Desktop/Master 2021 Fall/ST558 data science 
     *tidyverse
     *dplyr 
     *rmarkdown
+    *imager
 
 # Here is the code I need to contact API and extract some data from the pokeapi 
 
@@ -75,6 +79,7 @@ library(jsonlite)
 library(dplyr)
 library(tidyverse)
 library(rmarkdown)
+library(imager)
 ```
 
 ```{r}

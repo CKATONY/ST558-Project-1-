@@ -10,8 +10,12 @@ Exploratory Data Analysis.**
 
 API that is using in this project can be access
 [‘here’](https://pokeapi.co/)  
-Pokémon is childhood memory for lots of people.  
+Pokémon is childhood memory for lots of people.
+
 I used to play Pokémon on Game Boy Advance SP
+
+![](README_files/figure-gfm/unnamed-chunk-5-1.png)<!-- -->
+![](README_files/figure-gfm/unnamed-chunk-6-1.png)<!-- -->
 
 # The packages in R that are needed in this project
 
@@ -22,6 +26,7 @@ I used to play Pokémon on Game Boy Advance SP
     *tidyverse
     *dplyr 
     *rmarkdown
+    *imager
 
 # Here is the code I need to contact API and extract some data from the pokeapi
 
