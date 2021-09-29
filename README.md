@@ -9,7 +9,7 @@ Jiatao Wang
 Exploratory Data Analysis.**
 
 API that is using in this project can be access
-[‘here’](https://pokeapi.co/)  
+[here](https://pokeapi.co/)  
 Pokémon is childhood memory for lots of people.
 
 I used to play Pokémon on Game Boy Advance SP
@@ -19,12 +19,12 @@ I used to play Pokémon on Game Boy Advance SP
 
 # The packages in R that are needed in this project
 
-    [`knitr`](https://www.rdocumentation.org/packages/knitr/versions/1.30)
-    [`httr`](https://httr.r-lib.org/)
-    [`jsonlite`](https://cran.r-project.org/web/packages/jsonlite/vignettes/json-aaquickstart.html)
-    [`tidyverse`](https://www.tidyverse.org/)
-    [`rmarkdown`](https://www.rdocumentation.org/packages/rmarkdown/versions/1.7)
-    [`imager`](https://www.rdocumentation.org/packages/imager/versions/0.41.2)
+[**knitr**](https://www.rdocumentation.org/packages/knitr/versions/1.30)
+[**httr**](https://httr.r-lib.org/)
+[**jsonlite**](https://cran.r-project.org/web/packages/jsonlite/vignettes/json-aaquickstart.html)
+[**tidyverse**](https://www.tidyverse.org/)
+[**rmarkdown**](https://www.rdocumentation.org/packages/rmarkdown/versions/1.7)
+[**imager**](https://www.rdocumentation.org/packages/imager/versions/0.41.2)
 
 # Here is the code I need to contact API and extract some data from the pokeapi
 
