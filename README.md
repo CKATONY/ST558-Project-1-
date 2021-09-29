@@ -8,7 +8,7 @@ Jiatao Wang
 **This Project aims to accessing data from API, and make some
 Exploratory Data Analysis.**
 
-API that is using in this project can be access
+PokéAPI that is using in this project can be access
 [here](https://pokeapi.co/)  
 Pokémon is childhood memory for lots of people.
 
@@ -20,11 +20,16 @@ I used to play Pokémon on Game Boy Advance SP
 # The packages in R that are needed in this project
 
 [**knitr**](https://www.rdocumentation.org/packages/knitr/versions/1.30)
-[**httr**](https://httr.r-lib.org/)
+Integrate R code into text documents [**httr**](https://httr.r-lib.org/)
+map closely to the underlying http protocol  
 [**jsonlite**](https://cran.r-project.org/web/packages/jsonlite/vignettes/json-aaquickstart.html)
-[**tidyverse**](https://www.tidyverse.org/)
+convert between R objects and JSON without loss of type or information  
+[**tidyverse**](https://www.tidyverse.org/) exploratory data analysis
+packages  
 [**rmarkdown**](https://www.rdocumentation.org/packages/rmarkdown/versions/1.7)
+convert R Markdown documents into a variety of formats  
 [**imager**](https://www.rdocumentation.org/packages/imager/versions/0.41.2)
+covert image to image data to put in documents
 
 # Here is the code I need to contact API and extract some data from the pokeapi
 

@@ -7,7 +7,7 @@ date: "9/18/2021"
 
 __This Project aims to accessing data from API, and make some Exploratory Data Analysis.__ 
 
-API that is using in this project can be access [here](https://pokeapi.co/)  
+PokéAPI that is using in this project can be access [here](https://pokeapi.co/)  
 Pokémon is childhood memory for lots of people.
 
 I used to play Pokémon on Game Boy Advance SP  
@@ -33,12 +33,12 @@ plot(picture2,axes=0)
 
 
 # The packages in R that are needed in this project  
-[__knitr__](https://www.rdocumentation.org/packages/knitr/versions/1.30)
-[__httr__](https://httr.r-lib.org/)
-[__jsonlite__](https://cran.r-project.org/web/packages/jsonlite/vignettes/json-aaquickstart.html)
-[__tidyverse__](https://www.tidyverse.org/)
-[__rmarkdown__](https://www.rdocumentation.org/packages/rmarkdown/versions/1.7)
-[__imager__](https://www.rdocumentation.org/packages/imager/versions/0.41.2)
+[__knitr__](https://www.rdocumentation.org/packages/knitr/versions/1.30) Integrate R code into text documents 
+[__httr__](https://httr.r-lib.org/) map closely to the underlying http protocol  
+[__jsonlite__](https://cran.r-project.org/web/packages/jsonlite/vignettes/json-aaquickstart.html) convert between R objects and JSON without loss of type or information  
+[__tidyverse__](https://www.tidyverse.org/) exploratory data analysis packages  
+[__rmarkdown__](https://www.rdocumentation.org/packages/rmarkdown/versions/1.7) convert R Markdown documents into a variety of formats  
+[__imager__](https://www.rdocumentation.org/packages/imager/versions/0.41.2) covert image to image data to put in documents  
 
 # Here is the code I need to contact API and extract some data from the pokeapi 
 
