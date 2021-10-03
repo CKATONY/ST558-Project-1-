@@ -16,6 +16,18 @@ knitr::opts_chunk$set(echo = TRUE, warning= FALSE, message=FALSE)
 
 ```
 
+
+```{r, echo = FALSE}
+
+library(httr)
+library(jsonlite)
+library(tidyverse)
+library(rmarkdown)
+library(imager)
+```
+
+
+
 ```{r,echo = FALSE}
 picture1 <- load.image('/Users/CKA/Desktop/Master 2021 Fall/ST558 data science for statistician/sp.jpg')
 plot(picture1,axes=0)
@@ -69,15 +81,6 @@ __How to use this universal function:__
 **6.The total number of categories for the growth rate is 6. if you enter the number of choice greater than 6, it will return error, same rule applies to the other endpoint**  
 **7.For the endpoint item/move, if the choice is 0, it will return all the items/moves and its attribute, if the choice is not zero, it will return up to numbers of item/move you want to get up to your choice.**  
 **8.Recommendation: for the item and move endpoint, the time to get all the moves or items may take longer time. You can specify the choice to be __100__ or __200__** 
-
-```{r, echo = FALSE}
-
-library(httr)
-library(jsonlite)
-library(tidyverse)
-library(rmarkdown)
-library(imager)
-```
 
 ```{r}
 
@@ -559,7 +562,7 @@ tt= the data set obtained in the code above the function
 
 ## Here is some description of varaibles in the data set  
 
-They are all attributes of different type of berry in the game Pokemon 
+They are all attributes of different type of berry in the game Pokemon  
   __growth_time__  Time it takes the tree to grow one stage, in hours. Berry trees go through four of these growth stages before they can be picked.
 
   __max_harvest__  The maximum number of these berries that can grow on one tree in Generation IV.
