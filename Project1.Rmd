@@ -45,7 +45,7 @@ plot(picture2,axes=0)
 
 
 # The packages in R that are needed in this project  
-[__knitr__](https://www.rdocumentation.org/packages/knitr/versions/1.30) Integrate R code into text documents 
+[__knitr__](https://www.rdocumentation.org/packages/knitr/versions/1.30) Integrate R code into text documents  
 [__httr__](https://httr.r-lib.org/) map closely to the underlying http protocol  
 [__jsonlite__](https://cran.r-project.org/web/packages/jsonlite/vignettes/json-aaquickstart.html) convert between R objects and JSON without loss of type or information  
 [__tidyverse__](https://www.tidyverse.org/) exploratory data analysis packages  

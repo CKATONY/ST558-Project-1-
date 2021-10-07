@@ -20,8 +20,9 @@ I used to play Pokémon on Game Boy Advance SP
 # The packages in R that are needed in this project
 
 [**knitr**](https://www.rdocumentation.org/packages/knitr/versions/1.30)
-Integrate R code into text documents [**httr**](https://httr.r-lib.org/)
-map closely to the underlying http protocol  
+Integrate R code into text documents  
+[**httr**](https://httr.r-lib.org/) map closely to the underlying http
+protocol  
 [**jsonlite**](https://cran.r-project.org/web/packages/jsonlite/vignettes/json-aaquickstart.html)
 convert between R objects and JSON without loss of type or information  
 [**tidyverse**](https://www.tidyverse.org/) exploratory data analysis
@@ -578,19 +579,19 @@ get_endpoints("berry",0)
 ```
 
     ## # A tibble: 64 x 9
-    ##    Name   Growth_Time  Size Firmness   Max_Harvest Natural_Gift_Power Natrual_Gift_Type
-    ##    <chr>        <int> <int> <chr>            <int>              <int> <chr>            
-    ##  1 cheri            3    20 soft                 5                 60 fire             
-    ##  2 chesto           3    80 super-hard           5                 60 water            
-    ##  3 pecha            3    40 very-soft            5                 60 electric         
-    ##  4 rawst            3    32 hard                 5                 60 grass            
-    ##  5 aspear           3    50 super-hard           5                 60 ice              
-    ##  6 leppa            4    28 very-hard            5                 60 fighting         
-    ##  7 oran             4    35 super-hard           5                 60 poison           
-    ##  8 persim           4    47 hard                 5                 60 ground           
-    ##  9 lum             12    34 super-hard           5                 60 flying           
-    ## 10 sitrus           8    95 very-hard            5                 60 psychic          
-    ## # ... with 54 more rows, and 2 more variables: Soil_Dryness <int>, Smoothness <int>
+    ##    Name   Growth_Time  Size Firmness   Max_Harvest Natural_Gift_Power Natrual_Gift_Type Soil_Dryness Smoothness
+    ##    <chr>        <int> <int> <chr>            <int>              <int> <chr>                    <int>      <int>
+    ##  1 cheri            3    20 soft                 5                 60 fire                        15         25
+    ##  2 chesto           3    80 super-hard           5                 60 water                       15         25
+    ##  3 pecha            3    40 very-soft            5                 60 electric                    15         25
+    ##  4 rawst            3    32 hard                 5                 60 grass                       15         25
+    ##  5 aspear           3    50 super-hard           5                 60 ice                         15         25
+    ##  6 leppa            4    28 very-hard            5                 60 fighting                    15         20
+    ##  7 oran             4    35 super-hard           5                 60 poison                      15         20
+    ##  8 persim           4    47 hard                 5                 60 ground                      15         20
+    ##  9 lum             12    34 super-hard           5                 60 flying                       8         20
+    ## 10 sitrus           8    95 very-hard            5                 60 psychic                      7         20
+    ## # ... with 54 more rows
 
 ``` r
 df <- get_endpoints("berry",0)
@@ -632,21 +633,19 @@ NewPoke
 ```
 
     ## # A tibble: 64 x 13
-    ##    Name   Growth_Time  Size Firmness   Max_Harvest Natural_Gift_Power Natrual_Gift_Type
-    ##    <chr>        <int> <int> <chr>            <int>              <int> <chr>            
-    ##  1 cheri            3    20 soft                 5                 60 fire             
-    ##  2 chesto           3    80 super-hard           5                 60 water            
-    ##  3 pecha            3    40 very-soft            5                 60 electric         
-    ##  4 rawst            3    32 hard                 5                 60 grass            
-    ##  5 aspear           3    50 super-hard           5                 60 ice              
-    ##  6 leppa            4    28 very-hard            5                 60 fighting         
-    ##  7 oran             4    35 super-hard           5                 60 poison           
-    ##  8 persim           4    47 hard                 5                 60 ground           
-    ##  9 lum             12    34 super-hard           5                 60 flying           
-    ## 10 sitrus           8    95 very-hard            5                 60 psychic          
-    ## # ... with 54 more rows, and 6 more variables: Soil_Dryness <int>, Smoothness <int>,
-    ## #   Growth_Rate_in_Hour <dbl>, Pokeblocks_Productivity <dbl>,
-    ## #   Growth_Rate_Category <chr>, Size_Category <chr>
+    ##    Name   Growth_Time  Size Firmness   Max_Harvest Natural_Gift_Power Natrual_Gift_Type Soil_Dryness Smoothness Growth_Rate_in_~
+    ##    <chr>        <int> <int> <chr>            <int>              <int> <chr>                    <int>      <int>            <dbl>
+    ##  1 cheri            3    20 soft                 5                 60 fire                        15         25             6.67
+    ##  2 chesto           3    80 super-hard           5                 60 water                       15         25            26.7 
+    ##  3 pecha            3    40 very-soft            5                 60 electric                    15         25            13.3 
+    ##  4 rawst            3    32 hard                 5                 60 grass                       15         25            10.7 
+    ##  5 aspear           3    50 super-hard           5                 60 ice                         15         25            16.7 
+    ##  6 leppa            4    28 very-hard            5                 60 fighting                    15         20             7   
+    ##  7 oran             4    35 super-hard           5                 60 poison                      15         20             8.75
+    ##  8 persim           4    47 hard                 5                 60 ground                      15         20            11.8 
+    ##  9 lum             12    34 super-hard           5                 60 flying                       8         20             2.83
+    ## 10 sitrus           8    95 very-hard            5                 60 psychic                      7         20            11.9 
+    ## # ... with 54 more rows, and 3 more variables: Pokeblocks_Productivity <dbl>, Growth_Rate_Category <chr>, Size_Category <chr>
 
 Now We create some tables using the new data set. NewPoke!
 
@@ -659,19 +658,12 @@ table(NewPoke$Firmness, NewPoke$Natrual_Gift_Type)
 ```
 
     ##             
-    ##              bug dark dragon electric fighting fire flying ghost grass ground ice
-    ##   hard         2    0      0        0        1    0      0     2     2      3   0
-    ##   soft         1    2      2        0        1    3      2     1     1      1   0
-    ##   super-hard   0    1      2        1        0    1      1     1     0      0   1
-    ##   very-hard    0    0      0        0        2    0      1     0     1      0   3
-    ##   very-soft    1    1      0        3        0    0      0     0     0      0   0
-    ##             
-    ##              normal poison psychic rock steel water
-    ##   hard            0      2       0    2     0     1
-    ##   soft            0      0       2    1     0     1
-    ##   super-hard      0      1       1    0     1     1
-    ##   very-hard       0      1       1    0     1     1
-    ##   very-soft       1      0       0    1     1     0
+    ##              bug dark dragon electric fighting fire flying ghost grass ground ice normal poison psychic rock steel water
+    ##   hard         2    0      0        0        1    0      0     2     2      3   0      0      2       0    2     0     1
+    ##   soft         1    2      2        0        1    3      2     1     1      1   0      0      0       2    1     0     1
+    ##   super-hard   0    1      2        1        0    1      1     1     0      0   1      0      1       1    0     1     1
+    ##   very-hard    0    0      0        0        2    0      1     0     1      0   3      0      1       1    0     1     1
+    ##   very-soft    1    1      0        3        0    0      0     0     0      0   0      1      0       0    1     1     0
 
 **table 2**  
 Firmness versus Growth Rate in Category We can see from this table that
